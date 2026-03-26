@@ -1,0 +1,76 @@
+@import "tailwindcss";
+@import "katex/dist/katex.min.css";
+
+/* ─── Design System — CSS Variables ─────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg:       #0a0914;
+  --bg-card:  #120f24;
+  --bg-deep:  #0d0c1a;
+  --bg-term:  #080713;
+
+  /* Accent — Indigo Night */
+  --accent:       #AFA9EC;
+  --accent-mid:   #7F77DD;
+  --accent-dark:  #534AB7;
+  --accent-ghost: #2e2b4a;
+
+  /* Text */
+  --text-primary: #dddaf5;
+  --text-body:    #9993c4;
+  --text-muted:   #7a76a0;
+  --text-dim:     #4e4a6e;
+
+  /* Semantic */
+  --success: #3B6D11;
+  --amber:   #BA7517;
+  --error:   #A32D2D;
+
+  /* Book spine colour families */
+  --teal-1: #0A3830;  --teal-2: #0F6E56;  --teal-3: #1D9E75;
+  --slate-1: #042C53; --slate-2: #0C447C; --slate-3: #185FA5;
+  --amber-1: #412402; --amber-2: #633806; --amber-3: #854F0B; --amber-4: #BA7517;
+}
+
+/* ─── Tailwind Theme — map CSS vars to utilities ────────────────────────── */
+@theme inline {
+  /* Font families — next/font injects these CSS vars on <html> */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+/* ─── Global Base ────────────────────────────────────────────────────────── */
+html {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(175, 169, 236, 0.12);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(175, 169, 236, 0.22);
+}
+
+/* ─── KaTeX overrides — match design palette ────────────────────────────── */
+.katex {
+  font-size: 1em;
+  color: var(--accent);
+}
