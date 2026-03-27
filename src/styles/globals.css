@@ -69,6 +69,47 @@ body {
   background: rgba(175, 169, 236, 0.22);
 }
 
+/* ─── Animations ─────────────────────────────────────────────────────────── */
+
+/* Typewriter block cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.tw-cursor {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  background: var(--accent-dark);
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+/* "open to work" live dot */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+.live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #639922;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Scroll fade-in — applied via useIntersection */
+.fade-in {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* ─── KaTeX overrides — match design palette ────────────────────────────── */
 .katex {
   font-size: 1em;
