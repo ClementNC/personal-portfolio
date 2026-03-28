@@ -2,15 +2,17 @@
 
 import { forwardRef } from "react";
 import { TypeAnimation } from "react-type-animation";
+import { RxAvatar } from "react-icons/rx";
 import { VscTerminal } from "react-icons/vsc";
-import { TYPEWRITER_PHRASES } from "@/constants/terminal";
+import { TYPEWRITER_PHRASES, TYPEWRITER_TIMING } from "@/constants/hero";
+import { Comment } from "@/components/ui/Comment";
 
-// phrase → 1900ms hold → clear → 320ms pause before next phrase
+// phrase → hold → clear → pause before next phrase
 const typewriterSequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
   phrase,
-  1900,
+  TYPEWRITER_TIMING.holdMs,
   "",
-  320,
+  TYPEWRITER_TIMING.pauseMs,
 ]) as (string | number)[];
 
 export interface HeroProps {
@@ -21,7 +23,7 @@ export interface HeroProps {
 // IntersectionObserver to toggle the terminal FAB visibility
 export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
   { onOpenTerminal },
-  ref
+  ref,
 ) {
   return (
     <section
@@ -30,23 +32,32 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
     >
       {/* ── Left column ── */}
       <div className="flex flex-col">
-        {/* Comment block */}
-        <div className="font-mono text-[12px] text-[--accent-ghost] leading-[1.8] mb-6">
-          <p>// 4th year CS @ University of Waterloo</p>
-          <p>// software engineer · builder · always hungry</p>
-        </div>
+        <Comment
+          lines={[
+            "4B CS Student @ University of Waterloo",
+            "software engineer · tech enthusiast",
+          ]}
+          style="block"
+          className="text-[12px] mb-6"
+        />
 
         {/* Name heading */}
         <h1 className="text-[40px] font-medium text-[--text-primary] leading-[1.15] mb-3">
-          Hey, I&apos;m <span className="text-[--accent]">Clement</span>
+          Hey, I'm <span className="text-[--accent]">Clement</span>
         </h1>
 
         {/* Typewriter row */}
         <div className="font-mono text-[13px] text-[--accent-mid] flex items-center min-h-[20px] mb-6">
           <TypeAnimation
             sequence={typewriterSequence}
-            speed={{ type: "keyStrokeDelayInMs", value: 58 }}
-            deletionSpeed={{ type: "keyStrokeDelayInMs", value: 28 }}
+            speed={{
+              type: "keyStrokeDelayInMs",
+              value: TYPEWRITER_TIMING.keystrokeMs,
+            }}
+            deletionSpeed={{
+              type: "keyStrokeDelayInMs",
+              value: TYPEWRITER_TIMING.deletionMs,
+            }}
             repeat={Infinity}
             cursor={false}
           />
@@ -65,23 +76,8 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
       {/* ── Right column ── */}
       <div className="flex flex-col items-end gap-3 shrink-0">
         {/* Avatar circle */}
-        <div className="w-[148px] h-[148px] rounded-full bg-[--bg-card] [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
-          <svg width="44" height="44" viewBox="0 0 48 48" fill="none">
-            <circle
-              cx="24"
-              cy="18"
-              r="10"
-              stroke="#534AB7"
-              strokeWidth="1.5"
-            />
-            <path
-              d="M6 44 Q6 32 24 32 Q42 32 42 44"
-              stroke="#534AB7"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              fill="none"
-            />
-          </svg>
+        <div className="w-[148px] h-[148px] rounded-full bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
+          <RxAvatar size={48} className="text-[--accent]" />
           <span className="font-mono text-[10px] text-[--accent-ghost]">
             // avatar
           </span>
@@ -93,7 +89,7 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
           className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-[--text-muted] rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-[--accent] transition-colors duration-[180ms] ease-linear cursor-pointer"
         >
           <VscTerminal size={13} />
-          terminal
+          Open Terminal
         </button>
       </div>
     </section>

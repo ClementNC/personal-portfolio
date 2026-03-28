@@ -6,7 +6,7 @@ export const SITE_YEAR = "2025";
 export const OPEN_TO_WORK = true;
 
 export const SOCIAL_LINKS = {
-  github: "#",
-  linkedin: "#",
-  email: "mailto:#",
+  github: "https://github.com/ClementNC",
+  linkedin: "https://www.linkedin.com/in/clementnchow/",
+  email: "mailto:cnchow@uwaterloo.ca",
 } as const;
