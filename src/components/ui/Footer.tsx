@@ -8,7 +8,7 @@ const ICON_LINK_CLASSES =
 
 export function Footer() {
   return (
-    <footer className="flex items-center justify-between px-12 py-4 border-t-[0.5px] border-white/[0.06] mt-auto">
+    <footer className="sticky bottom-0 flex items-center justify-between px-12 py-4 border-t-[0.5px] border-white/[0.06] bg-[rgba(10,9,20,0.6)] backdrop-blur-md">
       {/* Left — credit */}
       <span className="font-mono text-[11px] text-[--accent-ghost]">
         // built by {SITE_NAME} · {SITE_YEAR}
@@ -16,13 +16,32 @@ export function Footer() {
 
       {/* Right — social icons */}
       <div className="flex items-center gap-3">
-        <Link href={SOCIAL_LINKS.github} className={ICON_LINK_CLASSES} title="GitHub" aria-label="GitHub profile">
+        <Link
+          href={SOCIAL_LINKS.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={ICON_LINK_CLASSES}
+          title="GitHub"
+          aria-label="GitHub profile"
+        >
           <FaGithub size={14} />
         </Link>
-        <Link href={SOCIAL_LINKS.linkedin} className={ICON_LINK_CLASSES} title="LinkedIn" aria-label="LinkedIn profile">
+        <Link
+          href={SOCIAL_LINKS.linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={ICON_LINK_CLASSES}
+          title="LinkedIn"
+          aria-label="LinkedIn profile"
+        >
           <FaLinkedin size={14} />
         </Link>
-        <Link href={SOCIAL_LINKS.email} className={ICON_LINK_CLASSES} title="Email" aria-label="Send email">
+        <Link
+          href={SOCIAL_LINKS.email}
+          className={ICON_LINK_CLASSES}
+          title="Email"
+          aria-label="Send email"
+        >
           <MdEmail size={14} />
         </Link>
       </div>

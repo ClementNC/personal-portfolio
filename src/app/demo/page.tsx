@@ -1,14 +1,13 @@
 "use client";
 
 import { TypeAnimation } from "react-type-animation";
-import { TYPEWRITER_PHRASES } from "@/constants/terminal";
+import { TYPEWRITER_PHRASES, TYPEWRITER_TIMING } from "@/constants/hero";
 
-// Build the sequence: phrase → hold → delete → pause → next
 const sequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
   phrase,
-  1900,
+  TYPEWRITER_TIMING.holdMs,
   "",
-  320,
+  TYPEWRITER_TIMING.pauseMs,
 ]) as (string | number)[];
 
 export default function DemoPage() {
@@ -23,8 +22,8 @@ export default function DemoPage() {
         <div className="font-mono text-[13px] text-[--accent-mid] flex items-center min-h-[20px]">
           <TypeAnimation
             sequence={sequence}
-            speed={{ type: "keyStrokeDelayInMs", value: 58 }}
-            deletionSpeed={{ type: "keyStrokeDelayInMs", value: 28 }}
+            speed={{ type: "keyStrokeDelayInMs", value: TYPEWRITER_TIMING.keystrokeMs }}
+            deletionSpeed={{ type: "keyStrokeDelayInMs", value: TYPEWRITER_TIMING.deletionMs }}
             repeat={Infinity}
           />
         </div>
@@ -38,8 +37,8 @@ export default function DemoPage() {
         <div className="font-mono text-[13px] text-[--accent-mid] flex items-center min-h-[20px]">
           <TypeAnimation
             sequence={sequence}
-            speed={{ type: "keyStrokeDelayInMs", value: 58 }}
-            deletionSpeed={{ type: "keyStrokeDelayInMs", value: 28 }}
+            speed={{ type: "keyStrokeDelayInMs", value: TYPEWRITER_TIMING.keystrokeMs }}
+            deletionSpeed={{ type: "keyStrokeDelayInMs", value: TYPEWRITER_TIMING.deletionMs }}
             repeat={Infinity}
             cursor={false}
           />
