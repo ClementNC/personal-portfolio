@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Nav } from "@/components/ui/Nav";
 import { Footer } from "@/components/ui/Footer";
+import { TerminalProvider } from "@/context/TerminalContext";
 import { SITE_NAME } from "@/constants/site";
 
 const inter = Inter({
@@ -33,9 +34,11 @@ export default function RootLayout({
       className={`${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen flex flex-col">
-        <Nav />
-        {children}
-        <Footer />
+        <TerminalProvider>
+          <Nav />
+          {children}
+          <Footer />
+        </TerminalProvider>
       </body>
     </html>
   );
