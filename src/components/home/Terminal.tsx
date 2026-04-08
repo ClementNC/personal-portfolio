@@ -10,10 +10,25 @@ import {
 } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/utils/cn";
-import { useTerminal, type OutputLine } from "@/hooks/useTerminal";
-import { TERMINAL_USER, TERMINAL_HOST } from "@/constants/terminal";
+import { createFileSystem, FileSystem, Directory } from "@/lib/terminal-fs";
+import { TERMINAL_USER, TERMINAL_HOST, TERMINAL_COMMANDS } from "@/constants/terminal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
+
+type LineType = "input" | "output" | "error" | "boot" | "dir";
+
+type OutputLine = {
+  id: string;
+  type: LineType;
+  text: string;
+  // Path captured at command execution time so history lines always show the
+  // directory the command was run from, even after a subsequent cd.
+  path?: string;
+};
+
+type CommandResult =
+  | { action: "none" | "exit" }
+  | { action: "navigate"; navigateTo: string };
 
 type TerminalState = "closed" | "panel" | "fullscreen" | "minimised";
 
@@ -38,6 +53,28 @@ interface TerminalWindowProps {
   onClose: () => void;
   onMinimise: () => void;
   onToggleFullscreen: () => void;
+}
+
+// ─── Line helpers ─────────────────────────────────────────────────────────────
+
+let lineCounter = 0;
+
+function makeLine(type: LineType, text: string, path?: string): OutputLine {
+  return { id: `l${++lineCounter}`, type, text, path };
+}
+
+const inputLine  = (cmd: string, path: string) => makeLine("input",  cmd, path);
+const outputLine = (text: string) => makeLine("output", text);
+const errorLine  = (text: string) => makeLine("error",  text);
+const dirLine    = (text: string) => makeLine("dir",    text);
+const bootLine   = (text: string) => makeLine("boot",   text);
+
+// ─── Boot message ─────────────────────────────────────────────────────────────
+
+// TODO: replace with a custom boot sequence — placeholder for now
+// Called each initSession so every line gets a fresh unique ID.
+function makeBootLines(): OutputLine[] {
+  return [bootLine("Welcome to my terminal.")];
 }
 
 // ─── TerminalWindow ───────────────────────────────────────────────────────────
@@ -150,12 +187,13 @@ function TerminalWindow({
 }
 
 // ─── Terminal ─────────────────────────────────────────────────────────────────
-// Owns the four-state machine (closed / panel / fullscreen / minimised)
-// and all side-effect wiring (router, resize, focus).
+// Owns the four-state machine (closed / panel / fullscreen / minimised),
+// all terminal session logic, and side-effect wiring (router, resize, focus).
 
 export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
   const router = useRouter();
 
+  // ── Window state ────────────────────────────────────────────────────────────
   const [state, setState] = useState<TerminalState>("closed");
   const [prevOpenState, setPrevOpenState] = useState<TerminalMode>("panel");
   const [isMinimising, setIsMinimising] = useState(false);
@@ -173,16 +211,247 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
 
   // Tracks the previous state so we can detect panel ↔ fullscreen toggles
   // and skip the genie animation (which would look like a close + reopen).
-  // The ref holds the PREVIOUS value during render because the useEffect
-  // that updates it runs AFTER paint.
   const prevStateRef = useRef<TerminalState>("closed");
   useEffect(() => {
     prevStateRef.current = state;
   }, [state]);
 
-  const { lines, currentPath, initSession, resetSession, executeCommand } = useTerminal();
+  // ── Session state ────────────────────────────────────────────────────────────
+  const [lines, setLines] = useState<OutputLine[]>([]);
+  const [cwdPath, setCwdPath] = useState("~");
 
-  // ── External open trigger — nav/hero increments this to open the terminal ─
+  // FileSystem instance lives in a ref — mutations don't trigger re-renders.
+  // Only the derived cwdPath (via setCwdPath) drives UI updates.
+  const fsRef = useRef<FileSystem>(createFileSystem());
+  const isBootedRef = useRef(false);
+
+  const syncCwd = useCallback(() => {
+    setCwdPath(fsRef.current.pwd());
+  }, []);
+
+  const initSession = useCallback(() => {
+    if (isBootedRef.current) return;
+    isBootedRef.current = true;
+    setLines([
+      ...makeBootLines(),
+      outputLine(""),
+      bootLine("// type 'help' to see available commands"),
+    ]);
+  }, []);
+
+  const resetSession = useCallback(() => {
+    isBootedRef.current = false;
+    setLines([]);
+    fsRef.current = createFileSystem();
+    setCwdPath("~");
+  }, []);
+
+  // ── Command dispatch ─────────────────────────────────────────────────────────
+
+  const executeCommand = useCallback(
+    (raw: string): CommandResult => {
+      const trimmed = raw.trim();
+      if (!trimmed) return { action: "none" };
+
+      const fs = fsRef.current;
+      const pathAtExecution = fs.pwd();
+      const [cmd, ...args] = trimmed.split(/\s+/);
+
+      switch (cmd.toLowerCase()) {
+        // ── help ────────────────────────────────────────────────────────
+        case "help":
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            outputLine(""),
+            outputLine("available commands:"),
+            outputLine(""),
+            ...Object.entries(TERMINAL_COMMANDS).map(([c, desc]) =>
+              outputLine(`  ${c.padEnd(22)}${desc}`),
+            ),
+            outputLine(""),
+          ]);
+          return { action: "none" };
+
+        // ── ls ──────────────────────────────────────────────────────────
+        case "ls": {
+          const target = args[0];
+          let dir: Directory;
+
+          if (target) {
+            const node = fs.resolve(target);
+            if (!node || node.type !== "directory") {
+              setLines((prev) => [
+                ...prev,
+                inputLine(trimmed, pathAtExecution),
+                errorLine(`ls: ${target}: no such directory`),
+              ]);
+              return { action: "none" };
+            }
+            dir = node;
+          } else {
+            dir = fs.getCwd();
+          }
+
+          const entries = dir.list();
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            entries.length > 0 ? dirLine(entries.join("    ")) : outputLine(""),
+          ]);
+          return { action: "none" };
+        }
+
+        // ── pwd ─────────────────────────────────────────────────────────
+        case "pwd":
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            outputLine(pathAtExecution),
+          ]);
+          return { action: "none" };
+
+        // ── cat ─────────────────────────────────────────────────────────
+        case "cat": {
+          const filePath = args[0];
+          if (!filePath) {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine("cat: missing file operand"),
+            ]);
+            return { action: "none" };
+          }
+
+          const node = fs.resolve(filePath);
+
+          if (!node) {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine(`cat: ${filePath}: no such file`),
+            ]);
+            return { action: "none" };
+          }
+
+          if (node.type === "directory") {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine(`cat: ${filePath}: is a directory`),
+            ]);
+            return { action: "none" };
+          }
+
+          const content = node.read();
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            outputLine(""),
+            ...content.split("\n").map((line) => outputLine(line)),
+            outputLine(""),
+          ]);
+          return { action: "none" };
+        }
+
+        // ── cd ──────────────────────────────────────────────────────────
+        case "cd": {
+          const target = args[0];
+
+          // cd with no args or cd ~ → root
+          if (!target || target === "~") {
+            fs.cd("~");
+            syncCwd();
+            setLines((prev) => [...prev, inputLine(trimmed, pathAtExecution)]);
+            return { action: "none" };
+          }
+
+          // cd() resolves internally — use the return value to avoid resolving twice
+          const result = fs.cd(target);
+
+          if (!result) {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine(`cd: ${target}: no such directory`),
+            ]);
+            return { action: "none" };
+          }
+
+          syncCwd();
+          setLines((prev) => [...prev, inputLine(trimmed, pathAtExecution)]);
+          return { action: "none" };
+        }
+
+        // ── open ────────────────────────────────────────────────────────
+        case "open": {
+          const target = args[0];
+          if (!target) {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine("open: missing directory operand"),
+            ]);
+            return { action: "none" };
+          }
+
+          const node = fs.resolve(target);
+
+          if (!node || node.type !== "directory") {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine(`open: ${target}: no such directory`),
+            ]);
+            return { action: "none" };
+          }
+
+          if (!node.navigateTo) {
+            setLines((prev) => [
+              ...prev,
+              inputLine(trimmed, pathAtExecution),
+              errorLine(`open: ${target}: no linked page`),
+            ]);
+            return { action: "none" };
+          }
+
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            outputLine(`→ opening ${node.navigateTo} ...`),
+          ]);
+          return { action: "navigate", navigateTo: node.navigateTo };
+        }
+
+        // ── clear ───────────────────────────────────────────────────────
+        case "clear":
+          setLines([]);
+          return { action: "none" };
+
+        // ── exit ────────────────────────────────────────────────────────
+        case "exit":
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            outputLine("Goodbye."),
+          ]);
+          return { action: "exit" };
+
+        // ── unknown ─────────────────────────────────────────────────────
+        default:
+          setLines((prev) => [
+            ...prev,
+            inputLine(trimmed, pathAtExecution),
+            errorLine(`${cmd}: command not found`),
+            outputLine("  type 'help' to see available commands"),
+          ]);
+          return { action: "none" };
+      }
+    },
+    [syncCwd],
+  );
+
+  // ── External open trigger — nav/hero increments this to open the terminal ──
   // Skips on mount (openTrigger === 0). openMode determines panel vs fullscreen.
   const prevTriggerRef = useRef(0);
   useEffect(() => {
@@ -193,7 +462,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     initSession();
   }, [openTrigger, openMode, initSession]);
 
-  // ── Resize — auto-minimise after 500ms below 1024px ──────────────────────
+  // ── Resize — auto-minimise after 500ms below 1024px ────────────────────────
   useEffect(() => {
     if (isDesktop) {
       if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -211,14 +480,14 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     };
   }, [isDesktop]);
 
-  // ── Auto-scroll to bottom whenever new lines are appended ────────────────
+  // ── Auto-scroll to bottom whenever new lines are appended ──────────────────
   useEffect(() => {
     if (outputRef.current) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
   }, [lines]);
 
-  // ── Focus the input whenever the terminal becomes visible ─────────────────
+  // ── Focus the input whenever the terminal becomes visible ──────────────────
   // Waits for the 200ms open animation to finish before focusing so the
   // browser doesn't interrupt the transform mid-play.
   useEffect(() => {
@@ -227,7 +496,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     return () => clearTimeout(timer);
   }, [state]);
 
-  // ── State transition handlers ────────────────────────────────────────────
+  // ── State transition handlers ───────────────────────────────────────────────
 
   const handleClose = useCallback(() => {
     setState("closed");
@@ -258,7 +527,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     }
   }, [state]);
 
-  // ── Command dispatch ─────────────────────────────────────────────────────
+  // ── Input handlers ──────────────────────────────────────────────────────────
 
   const handleSubmit = useCallback(() => {
     const result = executeCommand(inputValue);
@@ -278,7 +547,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     [handleSubmit],
   );
 
-  // ── Render ───────────────────────────────────────────────────────────────
+  // ── Render ──────────────────────────────────────────────────────────────────
 
   const isOpen = state === "panel" || state === "fullscreen";
 
@@ -301,7 +570,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     lines,
     inputValue,
     isFullscreen: state === "fullscreen",
-    currentPath,
+    currentPath: cwdPath,
     outputRef,
     inputRef,
     onInputChange: setInputValue,
