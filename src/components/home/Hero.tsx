@@ -1,11 +1,11 @@
 "use client";
 
-import { forwardRef } from "react";
 import { TypeAnimation } from "react-type-animation";
 import { RxAvatar } from "react-icons/rx";
 import { VscTerminal } from "react-icons/vsc";
 import { TYPEWRITER_PHRASES, TYPEWRITER_TIMING } from "@/constants/hero";
 import { Comment } from "@/components/ui/Comment";
+import { useTerminalContext } from "@/context/TerminalContext";
 
 // phrase → hold → clear → pause before next phrase
 const typewriterSequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
@@ -15,21 +15,11 @@ const typewriterSequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
   TYPEWRITER_TIMING.pauseMs,
 ]) as (string | number)[];
 
-export interface HeroProps {
-  onOpenTerminal: () => void;
-}
+export function Hero() {
+  const { openTerminal } = useTerminalContext();
 
-// forwardRef exposes the section element so page.tsx can attach an
-// IntersectionObserver to toggle the terminal FAB visibility
-export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
-  { onOpenTerminal },
-  ref,
-) {
   return (
-    <section
-      ref={ref}
-      className="flex items-start justify-between gap-12 pt-16 pb-12 [border-bottom:0.5px_solid_rgba(175,169,236,0.07)]"
-    >
+    <section className="flex items-start justify-between gap-12 pt-16 pb-12 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
       {/* ── Left column ── */}
       <div className="flex flex-col">
         <Comment
@@ -83,9 +73,9 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
           </span>
         </div>
 
-        {/* Open terminal button */}
+        {/* Open terminal button — opens in fullscreen for an immersive entry */}
         <button
-          onClick={onOpenTerminal}
+          onClick={() => openTerminal("fullscreen")}
           className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-[--text-muted] rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-[--accent] transition-colors duration-[180ms] ease-linear cursor-pointer"
         >
           <VscTerminal size={13} />
@@ -94,4 +84,4 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
       </div>
     </section>
   );
-});
+}

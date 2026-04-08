@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { HiArrowLongRight } from "react-icons/hi2";
 import { SectionHeader } from "@/components/ui/SectionHeader";

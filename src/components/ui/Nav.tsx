@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { VscTerminal } from "react-icons/vsc";
 import { NAV_LINKS } from "@/constants/nav";
-import { SITE_NAME, SITE_VERSION } from "@/constants/site";
+import { SITE_NAME } from "@/constants/site";
+import { useTerminalContext } from "@/context/TerminalContext";
 
 export function Nav() {
   const pathname = usePathname();
+  const { openTerminal } = useTerminalContext();
 
   function handleNameClick() {
     if (pathname === "/") {
@@ -41,10 +44,15 @@ export function Nav() {
         })}
       </div>
 
-      {/* Right — version */}
-      <span className="font-mono text-[11px] text-[--accent-ghost]">
-        {SITE_VERSION}
-      </span>
+      {/* Right — terminal button */}
+      <button
+        onClick={() => openTerminal("panel")}
+        aria-label="Open terminal"
+        className="flex items-center gap-[6px] font-mono text-[12px] px-[12px] py-[4px] rounded-[4px] text-[--text-dim] hover:text-[--accent] hover:bg-[rgba(175,169,236,0.05)] transition-colors duration-[150ms] cursor-pointer"
+      >
+        <VscTerminal size={13} />
+        Terminal
+      </button>
     </nav>
   );
 }
