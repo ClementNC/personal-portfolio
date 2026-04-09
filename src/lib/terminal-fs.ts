@@ -6,6 +6,8 @@ import { SKILLS } from "@/constants/hero";
 export interface FileSystemNode {
   readonly type: "file" | "directory";
   readonly name: string;
+  /** When set, `open <name>` navigates to this page in the app. */
+  readonly href?: string;
   // Full path from root (e.g. "~/notes"). Set by parent.addChild() so it
   // cannot be readonly — it is unknown at construction time. The root node
   // keeps its constructor default of "~"; all other nodes are overwritten
@@ -16,14 +18,17 @@ export interface FileSystemNode {
 
 export class File implements FileSystemNode {
   readonly type = "file" as const;
+  readonly href?: string;
   path: string;
   parent: Directory | null = null;
 
   constructor(
     readonly name: string,
     private content: string,
+    options?: { href?: string },
   ) {
     this.path = name; // overwritten by addChild
+    this.href = options?.href;
   }
 
   read(): string {
@@ -37,15 +42,14 @@ export class Directory implements FileSystemNode {
   parent: Directory | null = null;
   readonly children: Map<string, File | Directory> = new Map();
 
-  /** When set, `open <dir>` navigates to this page in the app. */
-  readonly navigateTo?: string;
+  readonly href?: string;
 
   constructor(
     readonly name: string,
-    options?: { navigateTo?: string },
+    options?: { href?: string },
   ) {
     this.path = name; // "~" for root; overwritten by addChild for all others
-    this.navigateTo = options?.navigateTo;
+    this.href = options?.href;
   }
 
   addChild(node: File | Directory): this {
@@ -155,19 +159,24 @@ function formatExperience(): string {
   ).join("\n\n");
 }
 
-function formatStack(): string {
+function formatSkills(): string {
   return [...SKILLS].join("  ·  ");
 }
 
 // ─── Tree factory ─────────────────────────────────────────────────────────────
 
 export function createFileSystem(): FileSystem {
-  const root = new Directory("~");
+  const about = new Directory("about", { href: "/about" });
+  about.addChild(new File("skills", formatSkills(), { href: "/#skills" }));
+  about.addChild(
+    new File("experiences", formatExperience(), { href: "/#experience" }),
+  );
 
-  root.addChild(new File("experience.md", formatExperience()));
-  root.addChild(new File("stack.md", formatStack()));
-  root.addChild(new Directory("notes", { navigateTo: "/notes" }));
-  root.addChild(new Directory("about", { navigateTo: "/about" }));
+  const notes = new Directory("notes", { href: "/notes" });
+
+  const root = new Directory("~");
+  root.addChild(about);
+  root.addChild(notes);
 
   return new FileSystem(root);
 }

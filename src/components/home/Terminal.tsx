@@ -9,16 +9,17 @@ import {
   useState,
 } from "react";
 import { useRouter } from "next/navigation";
+import { VscClose, VscChromeMinimize } from "react-icons/vsc";
+import { MdOpenInFull, MdCloseFullscreen } from "react-icons/md";
 import { cn } from "@/utils/cn";
 import { createFileSystem, FileSystem, Directory } from "@/lib/terminal-fs";
-import { TERMINAL_USER, TERMINAL_HOST, TERMINAL_COMMANDS } from "@/constants/terminal";
+import { TERMINAL_HOSTNAME, TERMINAL_COMMANDS } from "@/constants/terminal";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type LineType = "input" | "output" | "error" | "boot" | "dir";
 
 type OutputLine = {
-  id: string;
   type: LineType;
   text: string;
   // Path captured at command execution time so history lines always show the
@@ -57,17 +58,15 @@ interface TerminalWindowProps {
 
 // ─── Line helpers ─────────────────────────────────────────────────────────────
 
-let lineCounter = 0;
-
 function makeLine(type: LineType, text: string, path?: string): OutputLine {
-  return { id: `l${++lineCounter}`, type, text, path };
+  return { type, text, path };
 }
 
-const inputLine  = (cmd: string, path: string) => makeLine("input",  cmd, path);
+const inputLine = (cmd: string, path: string) => makeLine("input", cmd, path);
 const outputLine = (text: string) => makeLine("output", text);
-const errorLine  = (text: string) => makeLine("error",  text);
-const dirLine    = (text: string) => makeLine("dir",    text);
-const bootLine   = (text: string) => makeLine("boot",   text);
+const errorLine = (text: string) => makeLine("error", text);
+const dirLine = (text: string) => makeLine("dir", text);
+const bootLine = (text: string) => makeLine("boot", text);
 
 // ─── Boot message ─────────────────────────────────────────────────────────────
 
@@ -76,6 +75,35 @@ const bootLine   = (text: string) => makeLine("boot",   text);
 function makeBootLines(): OutputLine[] {
   return [bootLine("Welcome to my terminal.")];
 }
+
+// ─── Output span primitives ───────────────────────────────────────────────────
+
+const PromptHost = () => (
+  <span className="text-(--term-prompt)">{TERMINAL_HOSTNAME}</span>
+);
+const PromptPath = (text: string) => (
+  <span className="text-(--term-path)">{text}</span>
+);
+const PromptPrefix = (path: string) => (
+  <>
+    {PromptHost()}
+    {OutputText(":")}
+    {PromptPath(path)}
+    {OutputText("$ ")}
+  </>
+);
+const OutputText = (text: string) => (
+  <span className="text-(--term-white)">{text}</span>
+);
+const ErrorText = (text: string) => (
+  <span className="text-(--term-error)">{text}</span>
+);
+const BootText = (text: string) => (
+  <span className="text-(--text-muted)">{text}</span>
+);
+const DirText = (text: string) => (
+  <span className="text-(--term-path) font-bold">{text}</span>
+);
 
 // ─── TerminalWindow ───────────────────────────────────────────────────────────
 // Purely presentational — renders the titlebar, output area, and prompt input.
@@ -101,19 +129,29 @@ function TerminalWindow({
         <div className="flex items-center gap-[6px]">
           <button
             onClick={onClose}
-            className="w-3 h-3 rounded-full bg-[#ff5f57] hover:opacity-75 transition-opacity cursor-pointer"
+            className="group relative w-3 h-3 rounded-full bg-[#ff5f57] hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
             aria-label="Close terminal"
-          />
+          >
+            <VscClose className="absolute text-[8px] text-black/90 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </button>
           <button
             onClick={onMinimise}
-            className="w-3 h-3 rounded-full bg-[#febc2e] hover:opacity-75 transition-opacity cursor-pointer"
+            className="group relative w-3 h-3 rounded-full bg-[#febc2e] hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
             aria-label="Minimise terminal"
-          />
+          >
+            <VscChromeMinimize className="absolute text-[8px] text-black opacity-0 group-hover:opacity-100 transition-opacity" />
+          </button>
           <button
             onClick={onToggleFullscreen}
-            className="w-3 h-3 rounded-full bg-[#28c840] hover:opacity-75 transition-opacity cursor-pointer"
+            className="group relative w-3 h-3 rounded-full bg-[#28c840] hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
             aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
-          />
+          >
+            {isFullscreen ? (
+              <MdCloseFullscreen className="absolute text-[8px] text-black/90 opacity-0 group-hover:opacity-100 transition-opacity rotate-90" />
+            ) : (
+              <MdOpenInFull className="absolute text-[8px] text-black/90 opacity-0 group-hover:opacity-100 transition-opacity rotate-90" />
+            )}
+          </button>
         </div>
 
         <span className="font-mono text-[11px] text-[--text-dim]">
@@ -131,28 +169,24 @@ function TerminalWindow({
         onClick={() => inputRef.current?.focus()}
         className="flex-1 overflow-auto px-3 py-2 font-mono text-[12px] leading-[1.75] cursor-text"
       >
-        {lines.map((l) => (
-          <div key={l.id} className="whitespace-pre">
+        {lines.map((l, i) => (
+          <div key={i} className="whitespace-pre">
             {l.type === "input" ? (
               // Echoed command: coloured prompt prefix + white command text.
               // Use l.path (path captured at execution time) so history lines
               // always reflect the directory the command was run from.
               <>
-                <span className="text-[--term-prompt]">{TERMINAL_USER}@{TERMINAL_HOST}</span>
-                <span className="text-[--term-white]">:</span>
-                <span className="text-[--term-path]">{l.path ?? currentPath}</span>
-                <span className="text-[--term-white]">$ </span>
-                <span className="text-[--term-white]">{l.text}</span>
+                {PromptPrefix(l.path ?? currentPath)}
+                {OutputText(l.text)}
               </>
+            ) : l.type === "error" ? (
+              ErrorText(l.text)
+            ) : l.type === "boot" ? (
+              BootText(l.text)
+            ) : l.type === "dir" ? (
+              DirText(l.text)
             ) : (
-              <span className={cn(
-                l.type === "output" && "text-[--term-white]",
-                l.type === "error"  && "text-[--term-error]",
-                l.type === "boot"   && "text-[--text-muted]",
-                l.type === "dir"    && "text-[--term-path] font-bold",
-              )}>
-                {l.text}
-              </span>
+              OutputText(l.text)
             )}
           </div>
         ))}
@@ -160,23 +194,14 @@ function TerminalWindow({
         {/* Live input line — rendered inline with the output stream, not in a
             separate bar, so it behaves like a real Linux terminal prompt */}
         <div className="flex items-center whitespace-pre">
-          {isFullscreen ? (
-            <>
-              <span className="text-[--term-prompt] shrink-0">{TERMINAL_USER}@{TERMINAL_HOST}</span>
-              <span className="text-[--term-white] shrink-0">:</span>
-              <span className="text-[--term-path] shrink-0">{currentPath}</span>
-              <span className="text-[--term-white] shrink-0">$ </span>
-            </>
-          ) : (
-            <span className="text-[--term-prompt] shrink-0">$ </span>
-          )}
+          <div className="shrink-0">{PromptPrefix(currentPath)}</div>
           <input
             ref={inputRef}
             type="text"
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={onKeyDown}
-            className="flex-1 min-w-0 bg-transparent text-[--term-white] outline-none caret-[--term-prompt]"
+            className="flex-1 min-w-0 bg-transparent text-(--term-white) outline-none caret-(--term-prompt)"
             autoComplete="off"
             spellCheck={false}
           />
@@ -195,7 +220,6 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
 
   // ── Window state ────────────────────────────────────────────────────────────
   const [state, setState] = useState<TerminalState>("closed");
-  const [prevOpenState, setPrevOpenState] = useState<TerminalMode>("panel");
   const [isMinimising, setIsMinimising] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
@@ -390,23 +414,23 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
             setLines((prev) => [
               ...prev,
               inputLine(trimmed, pathAtExecution),
-              errorLine("open: missing directory operand"),
+              errorLine("open: missing operand"),
             ]);
             return { action: "none" };
           }
 
           const node = fs.resolve(target);
 
-          if (!node || node.type !== "directory") {
+          if (!node) {
             setLines((prev) => [
               ...prev,
               inputLine(trimmed, pathAtExecution),
-              errorLine(`open: ${target}: no such directory`),
+              errorLine(`open: ${target}: no such file or directory`),
             ]);
             return { action: "none" };
           }
 
-          if (!node.navigateTo) {
+          if (!node.href) {
             setLines((prev) => [
               ...prev,
               inputLine(trimmed, pathAtExecution),
@@ -418,9 +442,9 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
           setLines((prev) => [
             ...prev,
             inputLine(trimmed, pathAtExecution),
-            outputLine(`→ opening ${node.navigateTo} ...`),
+            outputLine(`→ opening ${node.href} ...`),
           ]);
-          return { action: "navigate", navigateTo: node.navigateTo };
+          return { action: "navigate", navigateTo: node.href };
         }
 
         // ── clear ───────────────────────────────────────────────────────
@@ -458,7 +482,6 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     if (openTrigger === 0 || openTrigger === prevTriggerRef.current) return;
     prevTriggerRef.current = openTrigger;
     setState(openMode);
-    setPrevOpenState(openMode);
     initSession();
   }, [openTrigger, openMode, initSession]);
 
@@ -471,7 +494,6 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
     debounceRef.current = setTimeout(() => {
       const current = stateRef.current;
       if (current === "panel" || current === "fullscreen") {
-        setPrevOpenState(current);
         setIsMinimising(true);
       }
     }, 500);
@@ -508,7 +530,6 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
   // transition once the CSS animation fires animationend.
   const handleMinimise = useCallback(() => {
     if (state !== "panel" && state !== "fullscreen") return;
-    setPrevOpenState(state);
     setIsMinimising(true);
   }, [state]);
 
@@ -520,10 +541,8 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
   const handleToggleFullscreen = useCallback(() => {
     if (state === "panel") {
       setState("fullscreen");
-      setPrevOpenState("fullscreen");
     } else if (state === "fullscreen") {
       setState("panel");
-      setPrevOpenState("panel");
     }
   }, [state]);
 
@@ -536,7 +555,8 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       // Delay so "Goodbye." is readable before the panel closes
       setTimeout(handleClose, 400);
     } else if (result.action === "navigate") {
-      setTimeout(() => router.push(result.navigateTo), 500);
+      router.push(result.navigateTo);
+      handleClose();
     }
   }, [inputValue, executeCommand, handleClose, router]);
 
