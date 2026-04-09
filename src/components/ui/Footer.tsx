@@ -8,7 +8,7 @@ const ICON_LINK_CLASSES =
 
 export function Footer() {
   return (
-    <footer className="sticky bottom-0 flex items-center justify-between px-12 py-4 border-t-[0.5px] border-white/[0.06] bg-[rgba(10,9,20,0.6)] backdrop-blur-md">
+    <footer className="bottom-0 flex items-center justify-between px-12 py-4 border-t-[0.5px] border-white/[0.06] bg-[rgba(10,9,20,0.6)] backdrop-blur-md">
       {/* Left — credit */}
       <span className="font-mono text-[11px] text-[--accent-ghost]">
         // built by {SITE_NAME} · {SITE_YEAR}
@@ -17,7 +17,7 @@ export function Footer() {
       {/* Right — social icons */}
       <div className="flex items-center gap-3">
         <Link
-          href={SOCIAL_LINKS.github}
+          href={SOCIAL_LINKS.GitHub}
           target="_blank"
           rel="noopener noreferrer"
           className={ICON_LINK_CLASSES}
@@ -27,7 +27,7 @@ export function Footer() {
           <FaGithub size={14} />
         </Link>
         <Link
-          href={SOCIAL_LINKS.linkedin}
+          href={SOCIAL_LINKS.LinkedIn}
           target="_blank"
           rel="noopener noreferrer"
           className={ICON_LINK_CLASSES}
@@ -37,7 +37,7 @@ export function Footer() {
           <FaLinkedin size={14} />
         </Link>
         <Link
-          href={SOCIAL_LINKS.email}
+          href={SOCIAL_LINKS.Email}
           className={ICON_LINK_CLASSES}
           title="Email"
           aria-label="Send email"

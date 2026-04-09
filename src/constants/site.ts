@@ -1,9 +1,8 @@
 export const SITE_NAME = "Clement Chow";
-export const SITE_VERSION = "v1.0.0";
-export const SITE_YEAR = "2025";
+export const SITE_YEAR = "2026";
 
 export const SOCIAL_LINKS = {
-  github: "https://github.com/ClementNC",
-  linkedin: "https://www.linkedin.com/in/clementnchow/",
-  email: "mailto:cnchow@uwaterloo.ca",
+  Email: "mailto:cnchow@uwaterloo.ca",
+  GitHub: "https://github.com/ClementNC",
+  LinkedIn: "https://www.linkedin.com/in/clementnchow/",
 } as const;

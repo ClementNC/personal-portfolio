@@ -1,4 +1,5 @@
 import { EXPERIENCE } from "@/constants/experience";
+import { SOCIAL_LINKS } from "@/constants/site";
 import { SKILLS } from "@/constants/hero";
 
 // ─── Node types ───────────────────────────────────────────────────────────────
@@ -152,6 +153,12 @@ export class FileSystem {
 
 // ─── Content formatters ───────────────────────────────────────────────────────
 
+function formatContacts(): string {
+  return Object.entries(SOCIAL_LINKS)
+    .map(([social, link]) => `${social}: ${link}`)
+    .join("\n");
+}
+
 function formatExperience(): string {
   return EXPERIENCE.map(
     (exp) =>
@@ -167,6 +174,7 @@ function formatSkills(): string {
 
 export function createFileSystem(): FileSystem {
   const about = new Directory("about", { href: "/about" });
+  about.addChild(new File("contacts", formatContacts()));
   about.addChild(new File("skills", formatSkills(), { href: "/#skills" }));
   about.addChild(
     new File("experiences", formatExperience(), { href: "/#experience" }),
