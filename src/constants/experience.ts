@@ -12,7 +12,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     company: "D2L",
     period: "Jan 2026 – Apr 2026",
     description: "One-line summary of what you built and the impact it had.",
-    tags: ["React", "TypeScript", "AWS"],
+    tags: ["C#", "PostgreSQL", "Lit", "TypeScript", "Playwright", "AWS ElasticSearch", "AWS DynamoDB", "AWS S3"],
   },
   {
     role: "Software Developer Intern",
@@ -26,7 +26,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     company: "Constant Contact",
     period: "May 2024 – Aug 2024",
     description: "One-line summary of what you built and the impact it had.",
-    tags: ["Java", "SQL", "React.js", "Playwright", "AWS"],
+    tags: ["Java", "MySQL", "React.js", "Playwright", "AWS CloudFront", "AWS Lambda", "AWS S3", "AWS SQS"],
   },
   {
     role: "Full Stack Developer Intern",

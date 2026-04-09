@@ -22,13 +22,13 @@ function ExperienceItem({ entry }: ExperienceItemProps) {
       {/* Timeline node — bg matches page so the border-left line appears to pass behind it */}
       <div className="absolute left-[-4.5px] top-[3px] w-2 h-2 rounded-full bg-[var(--bg)] [border:1.5px_solid_var(--accent-mid)]" />
 
-      <p className="text-[13px] font-medium text-[--text-primary]">
+      <p className="text-[13px] font-medium text-(--text-primary)">
         {entry.role}
       </p>
-      <p className="font-mono text-[11px] text-[--accent-dark] mt-[3px]">
-        {entry.company}&nbsp;·&nbsp;{entry.period}
+      <p className="font-mono text-[11px] text-(--accent-dark) mt-[3px]">
+        {entry.company}&nbsp;&nbsp;{entry.period}
       </p>
-      <p className="text-[12px] text-[--text-muted] mt-[5px] leading-[1.6]">
+      <p className="text-[12px] text-(--text-muted) mt-[5px] leading-[1.6]">
         {entry.description}
       </p>
       <div className="flex flex-wrap gap-[5px] mt-[6px]">
@@ -54,7 +54,7 @@ export function ExperienceList() {
       ref={ref}
       className="fade-in py-10 [border-bottom:0.5px_solid_rgba(175,169,236,0.07)]"
     >
-      <SectionHeader title="experience" comment="// internships" />
+      <SectionHeader title="experience" comment="internships" />
 
       {/* Timeline — border-left forms the vertical line */}
       <div className="[border-left:0.5px_solid_rgba(175,169,236,0.1)] ml-[6px]">
@@ -79,7 +79,7 @@ export function ExperienceList() {
       {hidden.length > 0 && (
         <button
           onClick={() => setExpanded((prev) => !prev)}
-          className="font-mono inline-flex items-center gap-[6px] mt-[14px] [border:0.5px_solid_rgba(175,169,236,0.10)] rounded-[6px] px-[14px] py-[6px] text-[11px] text-[--text-dim] hover:text-[--accent] hover:[border-color:rgba(175,169,236,0.25)] transition-colors duration-150 cursor-pointer"
+          className="font-mono inline-flex items-center gap-[6px] mt-[14px] [border:0.5px_solid_rgba(175,169,236,0.10)] rounded-[6px] px-[14px] py-[6px] text-[11px] text-(--text-dim) hover:text-(--accent) hover:[border-color:rgba(175,169,236,0.25)] transition-colors duration-150 cursor-pointer"
         >
           <span>{expanded ? "show less" : `show ${hidden.length} more`}</span>
         </button>

@@ -32,12 +32,12 @@ export function Hero() {
         />
 
         {/* Name heading */}
-        <h1 className="text-[40px] font-medium text-[--text-primary] leading-[1.15] mb-3">
-          Hey, I'm <span className="text-[--accent]">Clement</span>
+        <h1 className="text-[40px] font-medium text-(--text-primary) leading-[1.15] mb-3">
+          Hey, I'm <span className="text-(--accent)">Clement Chow</span>
         </h1>
 
         {/* Typewriter row */}
-        <div className="font-mono text-[13px] text-[--accent-mid] flex items-center min-h-[20px] mb-6">
+        <div className="font-mono text-[13px] text-(--accent-mid) flex items-center min-h-[20px] mb-6">
           <TypeAnimation
             sequence={typewriterSequence}
             speed={{
@@ -55,9 +55,9 @@ export function Hero() {
         </div>
 
         {/* Blurb */}
-        <p className="text-[14px] text-[--text-muted] leading-[1.9] max-w-[420px]">
+        <p className="text-[14px] text-(--text-body) leading-[1.9] max-w-[420px]">
           Building software by day, watching One Piece by night.{" "}
-          <span className="text-[--text-body]">
+          <span className="text-(--text-body)">
             I share notes from my CS degree — for anyone who finds them useful.
           </span>
         </p>
@@ -67,8 +67,8 @@ export function Hero() {
       <div className="flex flex-col items-end gap-3 shrink-0">
         {/* Avatar circle */}
         <div className="w-[148px] h-[148px] rounded-full bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
-          <RxAvatar size={48} className="text-[--accent]" />
-          <span className="font-mono text-[10px] text-[--accent-ghost]">
+          <RxAvatar size={48} className="text-(--accent)" />
+          <span className="font-mono text-[10px] text-(--accent-ghost)">
             // avatar
           </span>
         </div>
@@ -76,7 +76,7 @@ export function Hero() {
         {/* Open terminal button — opens in fullscreen for an immersive entry */}
         <button
           onClick={() => openTerminal("fullscreen")}
-          className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-[--text-muted] rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-[--accent] transition-colors duration-[180ms] ease-linear cursor-pointer"
+          className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-(--text-muted) rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-(--accent) transition-colors duration-[180ms] ease-linear cursor-pointer"
         >
           <VscTerminal size={13} />
           Open Terminal

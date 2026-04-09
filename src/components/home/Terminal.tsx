@@ -154,7 +154,7 @@ function TerminalWindow({
           </button>
         </div>
 
-        <span className="font-mono text-[11px] text-[--text-dim]">
+        <span className="font-mono text-[11px] text-(--text-dim)">
           {currentPath}
         </span>
 

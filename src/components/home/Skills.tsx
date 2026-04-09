@@ -15,7 +15,7 @@ export function Skills() {
     >
       <SectionHeader
         title="technical skills"
-        comment="// languages, frameworks & tools"
+        comment="languages, frameworks & tools"
       />
       <div className="flex flex-wrap gap-[7px]">
         {SKILLS.map((skill) => (
