@@ -343,7 +343,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
             dir = fs.getCwd();
           }
 
-          const entries = dir.list();
+          const entries = dir.list().sort((a, b) => a.localeCompare(b));
           setLines((prev) => [
             ...prev,
             inputLine(trimmed, pathAtExecution),
