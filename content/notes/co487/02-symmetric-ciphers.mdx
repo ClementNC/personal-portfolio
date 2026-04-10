@@ -1,0 +1,28 @@
+---
+title: "Symmetric-Key Encryption"
+date: "2025-09-16"
+type: "notes"
+course: "CO487"
+courseTitle: "Applied Cryptography"
+term: "4A"
+termLabel: "4A · Fall 2025"
+lectureNumber: 2
+---
+
+## Symmetric Encryption
+
+Both parties share a secret key $k$. Encryption and decryption use the same key:
+
+$$\text{Enc}(k, m) = c \qquad \text{Dec}(k, c) = m$$
+
+## One-Time Pad
+
+The OTP is **perfectly secure**: given ciphertext $c$, every plaintext $m$ is equally likely.
+
+$$c = m \oplus k \qquad m = c \oplus k$$
+
+**Limitation:** The key must be as long as the message and used only once — impractical for most applications.
+
+## AES (Advanced Encryption Standard)
+
+AES is a block cipher operating on 128-bit blocks with 128/192/256-bit keys. It uses a substitution-permutation network over 10–14 rounds.

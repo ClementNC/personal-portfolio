@@ -1,0 +1,31 @@
+---
+title: "Introduction to Operating Systems"
+date: "2026-01-14"
+type: "notes"
+course: "CS350"
+courseTitle: "Operating Systems"
+term: "3B"
+termLabel: "3B · Fall 2024"
+lectureNumber: 1
+---
+
+## What is an Operating System?
+
+An OS is software that manages hardware resources and provides abstractions for user programs.
+
+**Key abstractions:**
+
+- **Process** — a running program with its own address space
+- **File** — persistent, named storage
+- **Virtual memory** — each process sees a private address space
+
+## Kernel vs User Space
+
+The kernel runs in privileged mode and has direct hardware access. User programs run in unprivileged mode and use **system calls** to request kernel services.
+
+```
+User program
+  → system call (trap instruction)
+  → kernel handles request
+  → returns to user mode
+```

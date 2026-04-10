@@ -1,0 +1,33 @@
+---
+title: "Divide and Conquer"
+date: "2026-01-20"
+type: "notes"
+course: "CS341"
+courseTitle: "Algorithms"
+term: "3B"
+termLabel: "3B · Fall 2024"
+lectureNumber: 2
+---
+
+## Divide and Conquer Paradigm
+
+Break a problem into smaller subproblems, solve recursively, combine results.
+
+**Master Theorem:** For $T(n) = aT(n/b) + f(n)$:
+
+- If $f(n) = O(n^{\log_b a - \epsilon})$ then $T(n) = \Theta(n^{\log_b a})$
+- If $f(n) = \Theta(n^{\log_b a})$ then $T(n) = \Theta(n^{\log_b a} \log n)$
+- If $f(n) = \Omega(n^{\log_b a + \epsilon})$ then $T(n) = \Theta(f(n))$
+
+## Merge Sort
+
+```
+MergeSort(A, lo, hi):
+  if lo >= hi: return
+  mid = (lo + hi) / 2
+  MergeSort(A, lo, mid)
+  MergeSort(A, mid+1, hi)
+  Merge(A, lo, mid, hi)
+```
+
+Recurrence: $T(n) = 2T(n/2) + O(n)$ → $T(n) = O(n \log n)$

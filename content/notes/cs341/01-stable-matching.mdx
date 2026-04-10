@@ -1,0 +1,36 @@
+---
+title: "Stable Matching"
+date: "2026-01-13"
+type: "notes"
+course: "CS341"
+courseTitle: "Algorithms"
+term: "3B"
+termLabel: "3B · Fall 2024"
+lectureNumber: 1
+---
+
+## The Stable Matching Problem
+
+Given $n$ men and $n$ women, each with a strict preference ordering over all members of the opposite group, find a stable matching — a perfect matching with no blocking pairs.
+
+A **blocking pair** $(m, w)$ exists when:
+
+- $m$ prefers $w$ over his current partner, and
+- $w$ prefers $m$ over her current partner.
+
+## Gale-Shapley Algorithm
+
+```
+Initialize all men and women as free
+while some man m is free and hasn't proposed to every woman:
+  w = highest-ranked woman m hasn't proposed to
+  if w is free:
+    (m, w) become engaged
+  else if w prefers m over current partner m':
+    m' becomes free
+    (m, w) become engaged
+  else:
+    w rejects m
+```
+
+**Claim:** Gale-Shapley always terminates and produces a stable matching.
