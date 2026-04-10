@@ -2,10 +2,9 @@
 
 import { TypeAnimation } from "react-type-animation";
 import { RxAvatar } from "react-icons/rx";
-import { VscTerminal } from "react-icons/vsc";
+import { TbSend } from "react-icons/tb";
 import { TYPEWRITER_PHRASES, TYPEWRITER_TIMING } from "@/constants/hero";
 import { Comment } from "@/components/ui/Comment";
-import { useTerminalContext } from "@/context/TerminalContext";
 
 // phrase → hold → clear → pause before next phrase
 const typewriterSequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
@@ -16,10 +15,9 @@ const typewriterSequence = TYPEWRITER_PHRASES.flatMap((phrase) => [
 ]) as (string | number)[];
 
 export function Hero() {
-  const { openTerminal } = useTerminalContext();
 
   return (
-    <section className="flex items-start justify-between gap-12 pt-16 pb-12 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
+    <section className="flex items-start justify-between gap-12 pt-20 pb-8">
       {/* ── Left column ── */}
       <div className="flex flex-col">
         <Comment
@@ -56,10 +54,8 @@ export function Hero() {
 
         {/* Blurb */}
         <p className="text-[14px] text-(--text-body) leading-[1.9] max-w-[420px]">
-          Building software by day, watching One Piece by night.{" "}
-          <span className="text-(--text-body)">
-            I share notes from my CS degree — for anyone who finds them useful.
-          </span>
+          Building software by day, watching One Piece by night. I share notes
+          from my CS degree — for anyone who finds them useful.
         </p>
       </div>
 
@@ -68,18 +64,18 @@ export function Hero() {
         {/* Avatar circle */}
         <div className="w-[148px] h-[148px] rounded-full bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
           <RxAvatar size={48} className="text-(--accent)" />
-          <span className="font-mono text-[10px] text-(--accent-ghost)">
+          <span className="font-mono text-[10px] text-(--text-dim)">
             // avatar
           </span>
         </div>
 
-        {/* Open terminal button — opens in fullscreen for an immersive entry */}
+        {/* Get in touch button — scrolls to the contact section */}
         <button
-          onClick={() => openTerminal("fullscreen")}
+          onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
           className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-(--text-muted) rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-(--accent) transition-colors duration-[180ms] ease-linear cursor-pointer"
         >
-          <VscTerminal size={13} />
-          Open Terminal
+          <TbSend size={13} />
+          Get in touch
         </button>
       </div>
     </section>

@@ -22,13 +22,13 @@ function ExperienceItem({ entry }: ExperienceItemProps) {
       {/* Timeline node — bg matches page so the border-left line appears to pass behind it */}
       <div className="absolute left-[-4.5px] top-[3px] w-2 h-2 rounded-full bg-[var(--bg)] [border:1.5px_solid_var(--accent-mid)]" />
 
-      <p className="text-[13px] font-medium text-(--text-primary)">
+      <p className="text-[14px] font-medium text-(--text-primary)">
         {entry.role}
       </p>
-      <p className="font-mono text-[11px] text-(--accent-dark) mt-[3px]">
+      <p className="font-mono text-[12px] text-(--accent-dark) mt-[3px]">
         {entry.company}&nbsp;&nbsp;{entry.period}
       </p>
-      <p className="text-[12px] text-(--text-muted) mt-[5px] leading-[1.6]">
+      <p className="text-[13px] text-(--text-muted) mt-[5px] leading-[1.6]">
         {entry.description}
       </p>
       <div className="flex flex-wrap gap-[5px] mt-[6px]">
@@ -52,9 +52,9 @@ export function ExperienceList() {
   return (
     <section
       ref={ref}
-      className="fade-in py-10 [border-bottom:0.5px_solid_rgba(175,169,236,0.07)]"
+      className="fade-in py-8"
     >
-      <SectionHeader title="experience" comment="internships" />
+      <SectionHeader title="experience" />
 
       {/* Timeline — border-left forms the vertical line */}
       <div className="[border-left:0.5px_solid_rgba(175,169,236,0.1)] ml-[6px]">
