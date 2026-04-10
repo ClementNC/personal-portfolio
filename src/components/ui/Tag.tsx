@@ -11,7 +11,7 @@ const SIZE_CLASSES: Record<NonNullable<TagProps["size"]>, string> = {
 export function Tag({ label, size = "md" }: TagProps) {
   return (
     <span
-      className={`font-mono text-[--accent] bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] transition-colors duration-150 ease-linear ${SIZE_CLASSES[size]}`}
+      className={`font-mono text-(--accent) bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] transition-colors duration-150 ease-linear ${SIZE_CLASSES[size]}`}
     >
       {label}
     </span>

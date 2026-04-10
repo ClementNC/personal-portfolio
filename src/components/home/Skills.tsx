@@ -11,15 +11,19 @@ export function Skills() {
   return (
     <section
       ref={ref}
-      className="fade-in py-10 [border-bottom:0.5px_solid_rgba(175,169,236,0.07)]"
+      className="fade-in py-8"
     >
-      <SectionHeader
-        title="technical skills"
-        comment="// languages, frameworks & tools"
-      />
-      <div className="flex flex-wrap gap-[7px]">
-        {SKILLS.map((skill) => (
-          <Tag key={skill} label={skill} />
+      <SectionHeader title="technical skills" />
+      <div className="flex flex-col gap-4">
+        {Object.entries(SKILLS).map(([category, skills]) => (
+          <div key={category}>
+            <p className="font-mono text-[11px] text-(--text-dim) mb-2">{category}</p>
+            <div className="flex flex-wrap gap-[7px]">
+              {skills.map((skill) => (
+                <Tag key={skill} label={skill} />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </section>

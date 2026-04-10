@@ -5,18 +5,11 @@ export const TYPEWRITER_TIMING = {
   pauseMs: 320,
 } as const;
 
-export const SKILLS = [
-  "Python",
-  "Java",
-  "TypeScript",
-  "React",
-  "Node.js",
-  "SQL",
-  "Git",
-  "Linux",
-  "C / C++",
-  "Bash",
-] as const;
+export const SKILLS: Record<string, string[]> = {
+  Languages:  ["Python", "Java", "TypeScript", "C / C++", "Bash"],
+  Frameworks: ["React", "Node.js"],
+  Tools:      ["Git", "Linux", "SQL"],
+};
 
 // Phrases cycled by the typewriter on the hero section
 export const TYPEWRITER_PHRASES = [

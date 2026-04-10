@@ -23,7 +23,7 @@ export function Nav() {
       <Link
         href="/"
         onClick={handleNameClick}
-        className="text-[15px] font-medium text-[--accent] hover:opacity-80 transition-opacity duration-150"
+        className="text-[16px] font-medium text-(--accent) hover:opacity-80 transition-opacity duration-150"
       >
         {SITE_NAME}
       </Link>
@@ -36,7 +36,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`inline-flex items-center font-mono text-[12px] px-[16px] py-[4px] transition-colors duration-[150ms] [border-left:0.5px_solid_rgba(175,169,236,0.07)] text-[--text-dim] hover:text-[--accent] hover:bg-[rgba(175,169,236,0.05)] ${isLast ? "[border-right:0.5px_solid_rgba(175,169,236,0.07)]" : ""}`}
+              className={`inline-flex items-center font-mono text-[13px] px-[16px] py-[4px] transition-colors duration-[150ms] [border-left:0.5px_solid_rgba(175,169,236,0.07)] text-(--text-dim) hover:text-(--accent) hover:bg-[rgba(175,169,236,0.05)] ${isLast ? "[border-right:0.5px_solid_rgba(175,169,236,0.07)]" : ""}`}
             >
               {link.label}
             </Link>
@@ -48,9 +48,9 @@ export function Nav() {
       <button
         onClick={() => openTerminal("panel")}
         aria-label="Open terminal"
-        className="flex items-center gap-[6px] font-mono text-[12px] px-[12px] py-[4px] rounded-[4px] text-[--text-dim] hover:text-[--accent] hover:bg-[rgba(175,169,236,0.05)] transition-colors duration-[150ms] cursor-pointer"
+        className="flex items-center gap-[6px] font-mono text-[13px] px-[12px] py-[4px] rounded-[4px] text-(--text-dim) hover:text-(--accent) hover:bg-[rgba(175,169,236,0.05)] transition-colors duration-[150ms] cursor-pointer"
       >
-        <VscTerminal size={13} />
+        <VscTerminal size={15} />
         Terminal
       </button>
     </nav>

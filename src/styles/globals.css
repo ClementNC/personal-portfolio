@@ -13,7 +13,6 @@
   --accent:       #AFA9EC;
   --accent-mid:   #7F77DD;
   --accent-dark:  #534AB7;
-  --accent-ghost: #2e2b4a;
 
   /* Text */
   --text-primary: #dddaf5;
@@ -90,6 +89,17 @@ body {
   background: var(--accent-dark);
   margin-left: 2px;
   vertical-align: middle;
+  animation: blink 1s step-end infinite;
+}
+
+/* Terminal block cursor */
+.term-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  background: var(--term-white);
+  vertical-align: text-bottom;
+  margin-left: 1px;
   animation: blink 1s step-end infinite;
 }
 

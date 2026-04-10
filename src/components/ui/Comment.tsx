@@ -17,7 +17,7 @@ export function Comment({
   style = "line",
   className = "",
 }: CommentProps) {
-  const base = `font-mono text-[--accent-ghost] opacity-60 leading-[1.8] ${className}`;
+  const base = `font-mono text-(--text-dim) leading-[1.8] ${className}`;
 
   if (style === "line") {
     return (

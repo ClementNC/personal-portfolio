@@ -92,9 +92,31 @@ const PromptPrefix = (path: string) => (
     {OutputText("$ ")}
   </>
 );
-const OutputText = (text: string) => (
-  <span className="text-(--term-white)">{text}</span>
-);
+const OutputText = (text: string) => {
+  const parts = text.split(/(https?:\/\/[^\s]+|mailto:[^\s]+|[\w.+-]+@[\w-]+\.[^\s]+)/);
+  if (parts.length === 1) {
+    return <span className="text-(--term-white)">{text}</span>;
+  }
+  return (
+    <span className="text-(--term-white)">
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <a
+            key={i}
+            href={part.includes("@") ? `mailto:${part}` : part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-(--term-path) underline underline-offset-2 hover:text-(--accent) transition-colors duration-150"
+          >
+            {part}
+          </a>
+        ) : (
+          part
+        ),
+      )}
+    </span>
+  );
+};
 const ErrorText = (text: string) => (
   <span className="text-(--term-error)">{text}</span>
 );
@@ -154,7 +176,7 @@ function TerminalWindow({
           </button>
         </div>
 
-        <span className="font-mono text-[11px] text-[--text-dim]">
+        <span className="font-mono text-[11px] text-(--text-dim)">
           {currentPath}
         </span>
 
@@ -191,19 +213,23 @@ function TerminalWindow({
           </div>
         ))}
 
-        {/* Live input line — rendered inline with the output stream, not in a
-            separate bar, so it behaves like a real Linux terminal prompt */}
+        {/* Live input row — overflow-x: auto so long commands scroll the row,
+            not the input internally. Hidden <input> captures keystrokes;
+            visible <span> renders text so the row can measure true text width. */}
         <div className="flex items-center whitespace-pre">
           <div className="shrink-0">{PromptPrefix(currentPath)}</div>
+          <span className="text-(--term-white)">{inputValue}</span>
+          <span className="term-cursor" />
           <input
             ref={inputRef}
             type="text"
             value={inputValue}
             onChange={(e) => onInputChange(e.target.value)}
             onKeyDown={onKeyDown}
-            className="flex-1 min-w-0 bg-transparent text-(--term-white) outline-none caret-(--term-prompt)"
+            className="sr-only"
             autoComplete="off"
             spellCheck={false}
+            aria-label="terminal input"
           />
         </div>
       </div>
@@ -317,7 +343,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
             dir = fs.getCwd();
           }
 
-          const entries = dir.list();
+          const entries = dir.list().sort((a, b) => a.localeCompare(b));
           setLines((prev) => [
             ...prev,
             inputLine(trimmed, pathAtExecution),
@@ -508,6 +534,14 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       outputRef.current.scrollTop = outputRef.current.scrollHeight;
     }
   }, [lines]);
+
+  // ── Auto-scroll output area to the right on every keystroke ──────────────────
+  // The output area owns horizontal overflow; scrolling it right keeps the cursor visible.
+  useEffect(() => {
+    if (outputRef.current) {
+      outputRef.current.scrollLeft = outputRef.current.scrollWidth;
+    }
+  }, [inputValue]);
 
   // ── Focus the input whenever the terminal becomes visible ──────────────────
   // Waits for the 200ms open animation to finish before focusing so the

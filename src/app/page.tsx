@@ -2,6 +2,7 @@ import { Hero } from "@/components/home/Hero";
 import { Skills } from "@/components/home/Skills";
 import { ExperienceList } from "@/components/home/ExperienceList";
 import { NotesPreview } from "@/components/home/NotesPreview";
+import { Contact } from "@/components/home/Contact";
 
 export default function HomePage() {
   return (
@@ -10,6 +11,7 @@ export default function HomePage() {
       <section id="skills"><Skills /></section>
       <section id="experience"><ExperienceList /></section>
       <section id="notes"><NotesPreview /></section>
+      <section id="contact"><Contact /></section>
     </main>
   );
 }
