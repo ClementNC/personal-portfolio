@@ -20,7 +20,7 @@ function ExperienceItem({ entry }: ExperienceItemProps) {
   return (
     <div className="relative pl-5 pb-5 last:pb-0">
       {/* Timeline node — bg matches page so the border-left line appears to pass behind it */}
-      <div className="absolute left-[-4.5px] top-[3px] w-2 h-2 rounded-full bg-[var(--bg)] [border:1.5px_solid_var(--accent-mid)]" />
+      <div className="absolute left-[-4.5px] top-[3px] w-2 h-2 rounded-full bg-(--bg) [border:1.5px_solid_var(--accent-mid)]" />
 
       <p className="text-[14px] font-medium text-(--text-primary)">
         {entry.role}

@@ -16,7 +16,7 @@ function NoteCard({ card }: NoteCardProps) {
   return (
     <Link
       href={card.href}
-      className="flex-shrink-0 w-[185px] bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.1)] hover:[border-color:rgba(175,169,236,0.28)] rounded-[6px] px-4 py-[14px] transition-colors duration-200 cursor-pointer"
+      className="flex-shrink-0 w-[185px] bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.1)] hover:[border-color:rgba(175,169,236,0.28)] rounded-[6px] px-4 py-[14px] transition-colors duration-200 cursor-pointer"
     >
       <p className="font-mono text-[10px] text-(--accent-mid) mb-[5px]">{card.file}</p>
       <p className="text-[12px] font-medium text-(--text-primary) leading-[1.4]">{card.title}</p>

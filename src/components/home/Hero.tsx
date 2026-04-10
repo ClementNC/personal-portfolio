@@ -62,7 +62,7 @@ export function Hero() {
       {/* ── Right column ── */}
       <div className="flex flex-col items-end gap-3 shrink-0">
         {/* Avatar circle */}
-        <div className="w-[148px] h-[148px] rounded-full bg-[var(--bg-card)] [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
+        <div className="w-[148px] h-[148px] rounded-full bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
           <RxAvatar size={48} className="text-(--accent)" />
           <span className="font-mono text-[10px] text-(--text-dim)">
             // avatar

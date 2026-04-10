@@ -640,7 +640,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       {state === "panel" && (
         <div
           className={cn(
-            "fixed bottom-6 right-6 z-50 w-[300px] h-[380px] bg-[var(--bg-term)] [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[8px] flex flex-col overflow-hidden shadow-2xl",
+            "fixed bottom-6 right-6 z-50 w-[300px] h-[380px] bg-(--bg-term) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[8px] flex flex-col overflow-hidden shadow-2xl",
             animationClass,
           )}
           onAnimationEnd={isMinimising ? handleMinimiseEnd : undefined}
@@ -653,7 +653,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       {state === "fullscreen" && (
         <div
           className={cn(
-            "fixed inset-0 z-50 bg-[var(--bg-term)] flex flex-col",
+            "fixed inset-0 z-50 bg-(--bg-term) flex flex-col",
             animationClass,
           )}
           onAnimationEnd={isMinimising ? handleMinimiseEnd : undefined}

@@ -12,7 +12,7 @@ export const EXPERIENCE: ExperienceEntry[] = [
     company: "D2L",
     period: "Jan 2026 – Apr 2026",
     description: "One-line summary of what you built and the impact it had.",
-    tags: ["C#", "PostgreSQL", "Lit", "TypeScript", "Playwright", "AWS ElasticSearch", "AWS DynamoDB", "AWS S3"],
+    tags: ["C#", "PostgreSQL", "Lit", "TypeScript", "Playwright", "AWS OpenSearch", "AWS DynamoDB", "AWS S3"],
   },
   {
     role: "Software Developer Intern",
