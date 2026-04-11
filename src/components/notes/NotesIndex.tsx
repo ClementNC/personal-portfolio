@@ -7,7 +7,7 @@ import {
   HiChevronRight,
   HiArrowLongRight,
 } from "react-icons/hi2";
-import type { Course, TermGroup } from "@/types/notes";
+import type { CourseInfo, TermGroup } from "@/types/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -21,8 +21,8 @@ function formatCourseCode(code: string) {
   return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
 }
 
-function CourseRow({ course }: { course: Course }) {
-  const firstSlug = course.notes[0]?.slug;
+function CourseRow({ course }: { course: CourseInfo }) {
+  const firstSlug = course.lectures[0]?.slug;
   const href = firstSlug
     ? `/notes/${course.code.toLowerCase()}/${firstSlug}`
     : "#";
@@ -39,7 +39,7 @@ function CourseRow({ course }: { course: Course }) {
         {course.title}
       </span>
       <span className="font-mono text-[12px] text-(--text-dim) shrink-0">
-        {course.notes.length} {course.notes.length === 1 ? "note" : "notes"}
+        {course.lectures.length} {course.lectures.length === 1 ? "note" : "notes"}
       </span>
       <HiArrowLongRight
         size={16}

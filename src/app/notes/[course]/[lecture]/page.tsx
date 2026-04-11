@@ -1,17 +1,18 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { getAllNotes, getCourseNotes, getNoteContent } from "@/lib/notes";
+import { COURSES } from "@/constants/notes";
+import { getCourse, getNoteContent } from "@/lib/notes";
 import { NotesViewer } from "@/components/notes/NotesViewer";
 import { CodeBlock } from "@/components/notes/CodeBlock";
-import type { NoteMetadata } from "@/types/notes";
 
 export async function generateStaticParams() {
-  const notes = getAllNotes();
-  return notes.map((note) => ({
-    course: note.course.toLowerCase(),
-    lecture: note.slug,
-  }));
+  return COURSES.flatMap((course) =>
+    course.lectures.map((lecture) => ({
+      course: course.code.toLowerCase(),
+      lecture: lecture.slug,
+    }))
+  );
 }
 
 export async function generateMetadata({
@@ -20,9 +21,9 @@ export async function generateMetadata({
   params: Promise<{ course: string; lecture: string }>;
 }) {
   const { course, lecture } = await params;
-  const notes = getCourseNotes(course);
-  const note = notes.find((n) => n.slug === lecture);
-  const title = note ? `${note.metadata.title} | Clement Chow` : "Notes | Clement Chow";
+  const courseInfo = getCourse(course);
+  const entry = courseInfo?.lectures.find((l) => l.slug === lecture);
+  const title = entry ? `${entry.title} | Clement Chow` : "Notes | Clement Chow";
   return { title };
 }
 
@@ -32,14 +33,14 @@ export default async function LecturePage({
   params: Promise<{ course: string; lecture: string }>;
 }) {
   const { course, lecture } = await params;
-  const courseNotes = getCourseNotes(course);
-  const currentNote = courseNotes.find((n) => n.slug === lecture);
+  const courseInfo = getCourse(course);
+  const currentLecture = courseInfo?.lectures.find((l) => l.slug === lecture);
 
   let content: React.ReactElement | null = null;
 
-  if (currentNote?.metadata.type === "notes") {
+  if (currentLecture?.type === "notes") {
     const raw = getNoteContent(course, lecture);
-    const compiled = await compileMDX<NoteMetadata>({
+    const compiled = await compileMDX({
       source: raw,
       options: {
         parseFrontmatter: true,
@@ -59,10 +60,10 @@ export default async function LecturePage({
   return (
     <NotesViewer
       courseCode={course.toUpperCase()}
-      notes={courseNotes}
+      lectures={courseInfo?.lectures ?? []}
       activeLecture={lecture}
       content={content}
-      pdfUrl={currentNote?.metadata.pdfUrl}
+      pdfUrl={currentLecture?.pdfUrl}
     />
   );
 }
