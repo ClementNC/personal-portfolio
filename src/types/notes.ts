@@ -1,6 +1,6 @@
 export type NoteType = "notes" | "pdf";
 
-export interface NoteFrontmatter {
+export interface NoteMetadata {
   title: string;
   date: string;
   type: NoteType;
@@ -14,21 +14,21 @@ export interface NoteFrontmatter {
 }
 
 export interface NoteFile {
-  slug: string;       // e.g. "01-intro-stable-matching"
-  course: string;     // e.g. "CS341"
-  frontmatter: NoteFrontmatter;
+  slug: string; // e.g. "01-intro-stable-matching"
+  course: string; // e.g. "CS341"
+  metadata: NoteMetadata;
 }
 
 export interface Course {
-  code: string;       // e.g. "CS341"
-  title: string;      // e.g. "Algorithms"
-  term: string;       // e.g. "3B"
-  termLabel: string;  // e.g. "3B · Winter 2024"
+  code: string; // e.g. "CS341"
+  title: string; // e.g. "Algorithms"
+  term: string; // e.g. "3B"
+  termLabel: string; // e.g. "3B  Winter 2024"
   notes: NoteFile[];
 }
 
 export interface TermGroup {
-  term: string;       // e.g. "3B"
-  termLabel: string;  // e.g. "3B · Winter 2024"
+  term: string; // e.g. "3B"
+  termLabel: string; // e.g. "3B  Winter 2024"
   courses: Course[];
 }

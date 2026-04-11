@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { HiChevronDown, HiChevronRight, HiArrowLongRight } from "react-icons/hi2";
+import {
+  HiChevronDown,
+  HiChevronRight,
+  HiArrowLongRight,
+} from "react-icons/hi2";
 import type { Course, TermGroup } from "@/types/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -12,6 +16,10 @@ interface NotesIndexProps {
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
+
+function formatCourseCode(code: string) {
+  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
+}
 
 function CourseRow({ course }: { course: Course }) {
   const firstSlug = course.notes[0]?.slug;
@@ -25,7 +33,7 @@ function CourseRow({ course }: { course: Course }) {
       className="group flex items-center gap-4 py-3 mb-1.5 last:mb-0 bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.08)] hover:bg-[rgba(175,169,236,0.06)] hover:[border-color:rgba(175,169,236,0.15)] transition-colors duration-150 px-3 rounded-[4px]"
     >
       <span className="font-mono text-[13px] text-(--accent-mid) w-16 shrink-0">
-        {course.code}
+        {formatCourseCode(course.code)}
       </span>
       <span className="text-[14px] text-(--text-body) flex-1 min-w-0 truncate">
         {course.title}
@@ -51,17 +59,24 @@ function TermSection({
   onToggle: () => void;
 }) {
   return (
-    <div className="mb-8">
+    <div className={open ? "mb-8" : "mb-3"}>
       <button
         onClick={onToggle}
         className="flex items-center justify-between w-full text-left mb-3 group cursor-pointer"
       >
         <div className="flex items-center gap-2">
-          {open
-            ? <HiChevronDown size={14} className="text-(--text-dim) transition-colors duration-150" />
-            : <HiChevronRight size={14} className="text-(--text-dim) transition-colors duration-150" />
-          }
-          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-full px-2.5 py-0.5 group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
+          {open ? (
+            <HiChevronDown
+              size={14}
+              className="text-(--text-dim) transition-colors duration-150"
+            />
+          ) : (
+            <HiChevronRight
+              size={14}
+              className="text-(--text-dim) transition-colors duration-150"
+            />
+          )}
+          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-full px-2.5 py-0.5 whitespace-pre group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
             {group.termLabel}
           </span>
         </div>
@@ -108,7 +123,12 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
             Notes
           </h1>
           <p className="text-[14px] text-(--text-body)">
-            Course notes from my time at Waterloo.
+            These are the course notes that I've taken during my time as a
+            Computer Science student at the University of Waterloo. I try to
+            take my own notes when I can but if I don't have them, I will attach
+            lecture slides if I happen to have them. Feel free to take a look
+            around! If you have any questions or want to chat about the courses,
+            my notes, or anything else, my contact info is on the homepage. :)
           </p>
         </div>
 

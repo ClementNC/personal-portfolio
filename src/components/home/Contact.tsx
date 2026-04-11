@@ -13,10 +13,10 @@ export function Contact() {
       <SectionHeader title="Contacts" />
 
       <p className="text-[14px] text-(--text-body) leading-[1.9] max-w-[520px] mb-6">
-        I&apos;m a 4th-year CS student at Waterloo with experience across
-        full-stack, DevOps, and distributed systems. I&apos;m currently open to
-        new grad roles starting Summer/Fall 2026 — if you think we&apos;d work
-        well together, I&apos;d love to hear from you.
+        I'm a 4th-year CS student at Waterloo with experience across full-stack,
+        DevOps, and distributed systems. I'm currently open to new grad roles
+        starting Summer/Fall 2026 — if you think we'd work well together, I'd
+        love to hear from you.
       </p>
 
       <a
