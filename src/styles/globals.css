@@ -20,6 +20,9 @@
   --text-muted:   #7a76a0;
   --text-dim:     #4e4a6e;
 
+  /* Layout */
+  --nav-height: 56px;
+
   /* Semantic */
   --success: #3B6D11;
   --amber:   #BA7517;

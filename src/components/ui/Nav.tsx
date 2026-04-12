@@ -18,7 +18,7 @@ export function Nav() {
   }
 
   return (
-    <nav className="sticky top-0 z-50 flex items-center justify-between px-12 py-[0.85rem] border-b-[0.5px] border-white/[0.08] bg-[rgba(10,9,20,0.6)] backdrop-blur-md">
+    <nav className="sticky top-0 z-50 flex items-center justify-between px-12 h-(--nav-height) border-b-[0.5px] border-white/[0.08] bg-[rgba(10,9,20,0.6)] backdrop-blur-md">
       {/* Left — name; navigates home or scrolls to top if already there */}
       <Link
         href="/"

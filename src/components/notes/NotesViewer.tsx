@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { HiChevronLeft, HiChevronRight } from "react-icons/hi2";
+import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
+import { HiArrowLongLeft } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -15,10 +16,59 @@ interface NotesViewerProps {
   pdfUrl?: string;
 }
 
-// ── Sub-components ────────────────────────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatCourseCode(code: string) {
   return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
+}
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function ViewerTopbar({
+  open,
+  onToggle,
+  courseCode,
+  activeLecture,
+  lectures,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  courseCode: string;
+  activeLecture: string;
+  lectures: LectureEntry[];
+}) {
+  const lectureTitle = lectures.find((l) => l.slug === activeLecture)?.title;
+
+  return (
+    <div className="h-10 shrink-0 flex items-center px-3 gap-3 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
+      <Link
+        href="/notes"
+        className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
+        aria-label="Back to notes"
+      >
+        <HiArrowLongLeft size={16} />
+      </Link>
+
+      <button
+        onClick={onToggle}
+        className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer shrink-0"
+        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+      >
+        {open ? <LuPanelLeftClose size={14} /> : <LuPanelLeftOpen size={14} />}
+      </button>
+
+      <div className="flex items-center gap-1.5 font-mono text-[12px] min-w-0">
+        <Link
+          href="/notes"
+          className="text-(--accent-mid) hover:text-(--accent) transition-colors duration-150 shrink-0"
+        >
+          {formatCourseCode(courseCode)}
+        </Link>
+        <span className="text-(--text-dim) shrink-0">/</span>
+        <span className="text-(--text-muted) truncate">{lectureTitle}</span>
+      </div>
+    </div>
+  );
 }
 
 function ViewerSidebar({
@@ -26,78 +76,45 @@ function ViewerSidebar({
   lectures,
   activeLecture,
   open,
-  onToggle,
 }: {
-  courseCode: string;
+  courseCode: string;  // used to build lecture hrefs
   lectures: LectureEntry[];
   activeLecture: string;
   open: boolean;
-  onToggle: () => void;
 }) {
   return (
     <aside
       className={`shrink-0 flex flex-col h-full [border-right:0.5px_solid_rgba(175,169,236,0.08)] transition-[width] duration-200 ease-in-out overflow-hidden ${
-        open ? "w-[300px]" : "w-8"
+        open ? "w-[300px]" : "w-0"
       }`}
     >
-      {open ? (
-        <>
-          {/* Header */}
-          <div className="flex items-center justify-between px-4 py-4 shrink-0">
-            <span className="font-mono text-[13px] text-(--accent-mid)">
-              {formatCourseCode(courseCode)}
-            </span>
-            <button
-              onClick={onToggle}
-              className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer"
-              aria-label="Collapse sidebar"
+      {/* Lecture list */}
+      <nav className="flex-1 overflow-y-auto py-2">
+        {lectures.map((lecture, i) => {
+          const isActive = lecture.slug === activeLecture;
+          return (
+            <Link
+              key={lecture.slug}
+              href={`/notes/${courseCode.toLowerCase()}/${lecture.slug}`}
+              className={`flex items-center gap-2 px-4 py-2 text-[12px] transition-colors duration-150 ${
+                isActive
+                  ? "bg-(--bg-card) text-(--accent)"
+                  : "text-(--text-muted) hover:text-(--text-primary) hover:bg-[rgba(175,169,236,0.03)]"
+              }`}
             >
-              <HiChevronLeft size={14} />
-            </button>
-          </div>
-
-          <div className="[border-top:0.5px_solid_rgba(175,169,236,0.08)]" />
-
-          {/* Lecture list */}
-          <nav className="flex-1 overflow-y-auto py-2">
-            {lectures.map((lecture, i) => {
-              const isActive = lecture.slug === activeLecture;
-              return (
-                <Link
-                  key={lecture.slug}
-                  href={`/notes/${courseCode.toLowerCase()}/${lecture.slug}`}
-                  className={`flex items-center gap-2 px-4 py-2 text-[12px] transition-colors duration-150 ${
-                    isActive
-                      ? "bg-(--bg-card) text-(--accent)"
-                      : "text-(--text-muted) hover:text-(--text-primary) hover:bg-[rgba(175,169,236,0.03)]"
-                  }`}
-                >
-                  <span className="font-mono text-[11px] text-(--text-dim) shrink-0 w-5">
-                    L{i + 1}
-                  </span>
-                  <span className="truncate">{lecture.title}</span>
-                  {lecture.type === "pdf" && (
-                    <span className="font-mono text-[10px] text-(--amber) shrink-0">
-                      pdf
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        </>
-      ) : (
-        /* Collapsed strip */
-        <div className="flex items-center justify-center h-full">
-          <button
-            onClick={onToggle}
-            className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer"
-            aria-label="Expand sidebar"
-          >
-            <HiChevronRight size={14} />
-          </button>
-        </div>
-      )}
+              <span className="font-mono text-[11px] text-(--text-dim) shrink-0 w-5">
+                L{i + 1}
+              </span>
+              <span className="truncate">{lecture.title}</span>
+              {lecture.type === "pdf" && (
+                <span className="font-mono text-[10px] text-(--amber) shrink-0">
+                  pdf
+                </span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
     </aside>
   );
 }
@@ -140,15 +157,23 @@ export function NotesViewer({
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-[calc(100vh-var(--nav-height,56px))] bg-(--bg) overflow-hidden">
-      <ViewerSidebar
-        courseCode={courseCode}
-        lectures={lectures}
-        activeLecture={activeLecture}
+    <div className="flex flex-col h-[calc(100vh-var(--nav-height,56px))] bg-(--bg) overflow-hidden">
+      <ViewerTopbar
         open={sidebarOpen}
         onToggle={() => setSidebarOpen((prev) => !prev)}
+        courseCode={courseCode}
+        activeLecture={activeLecture}
+        lectures={lectures}
       />
-      <ViewerContent content={content} pdfUrl={pdfUrl} />
+      <div className="flex flex-1 overflow-hidden">
+        <ViewerSidebar
+          courseCode={courseCode}
+          lectures={lectures}
+          activeLecture={activeLecture}
+          open={sidebarOpen}
+        />
+        <ViewerContent content={content} pdfUrl={pdfUrl} />
+      </div>
     </div>
   );
 }
