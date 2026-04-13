@@ -6,6 +6,6 @@ export const CS348: CourseInfo = {
   term: "3A",
   termLabel: "3A  Winter 2024",
   lectures: [
-    { slug: "01-intro", title: "Introduction", type: "notes" },
+    { id: "01-intro", title: "Introduction", type: "notes" },
   ],
 };

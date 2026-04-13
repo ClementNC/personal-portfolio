@@ -6,7 +6,7 @@ export const CS341: CourseInfo = {
   term: "3B",
   termLabel: "3B  Fall 2024",
   lectures: [
-    { slug: "01-stable-matching", title: "Stable Matching", type: "notes" },
-    { slug: "02-divide-and-conquer", title: "Divide and Conquer", type: "notes" },
+    { id: "01-stable-matching", title: "Stable Matching", type: "notes" },
+    { id: "02-divide-and-conquer", title: "Divide and Conquer", type: "notes" },
   ],
 };

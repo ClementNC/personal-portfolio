@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { HiSearch } from "react-icons/hi";
 import {
   HiChevronDown,
   HiChevronRight,
@@ -22,10 +23,8 @@ function formatCourseCode(code: string) {
 }
 
 function CourseRow({ course }: { course: CourseInfo }) {
-  const firstSlug = course.lectures[0]?.slug;
-  const href = firstSlug
-    ? `/notes/${course.code.toLowerCase()}/${firstSlug}`
-    : "#";
+  const firstId = course.lectures[0]?.id;
+  const href = firstId ? `/notes/${course.code.toLowerCase()}/${firstId}` : "#";
 
   return (
     <Link
@@ -39,7 +38,8 @@ function CourseRow({ course }: { course: CourseInfo }) {
         {course.title}
       </span>
       <span className="font-mono text-[12px] text-(--text-dim) shrink-0">
-        {course.lectures.length} {course.lectures.length === 1 ? "note" : "notes"}
+        {course.lectures.length}{" "}
+        {course.lectures.length === 1 ? "note" : "notes"}
       </span>
       <HiArrowLongRight
         size={16}
@@ -133,12 +133,18 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
         </div>
 
         {/* Search — placeholder only, logic added in a separate change */}
-        <input
-          type="text"
-          placeholder="search by course code or name..."
-          readOnly
-          className="w-full max-w-xs font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[4px] px-3 py-2 mb-10 outline-none cursor-default"
-        />
+        <div className="relative w-full max-w-xs mb-10">
+          <HiSearch
+            size={13}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-(--text-dim) pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="search by course code or name..."
+            readOnly
+            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[4px] pl-8 pr-3 py-2 outline-none cursor-default"
+          />
+        </div>
 
         {/* Term groups */}
         {termGroups.map((group) => (

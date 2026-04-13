@@ -6,6 +6,6 @@ export const STAT443: CourseInfo = {
   term: "4A",
   termLabel: "4A  Fall 2025",
   lectures: [
-    { slug: "01-intro", title: "Introduction", type: "notes" },
+    { id: "01-intro", title: "Introduction", type: "notes" },
   ],
 };

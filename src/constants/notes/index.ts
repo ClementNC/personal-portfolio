@@ -18,7 +18,7 @@ import { STAT231 } from "./stat231";
 import { CS246 } from "./cs246";
 import { MATH235 } from "./math235";
 import { MATH237 } from "./math237";
-import { STAT239 } from "./stat239";
+import { STAT230 } from "./stat230";
 import { CS136 } from "./cs136";
 import { MATH136 } from "./math136";
 import { MATH138 } from "./math138";
@@ -27,17 +27,34 @@ import { MATH137 } from "./math137";
 
 export const COURSES: CourseInfo[] = [
   // 4A
-  CO487, CS451, STAT443, CHEM120,
+  CO487,
+  CS451,
+  STAT443,
+  CHEM120,
   // 3B
-  CS341, CS350, STAT341,
+  CS341,
+  CS350,
+  STAT341,
   // 3A
-  CS240, CS348, MATH239, STAT331,
+  CS240,
+  CS348,
+  MATH239,
+  STAT331,
   // 2B
-  CS241, CS245, CS251, STAT231,
+  CS241,
+  CS245,
+  CS251,
+  STAT231,
   // 2A
-  CS246, MATH235, MATH237, STAT239,
+  CS246,
+  MATH235,
+  MATH237,
+  STAT230,
   // 1B
-  CS136, MATH136, MATH138,
+  CS136,
+  MATH136,
+  MATH138,
   // 1A
-  MATH135, MATH137,
+  MATH135,
+  MATH137,
 ];

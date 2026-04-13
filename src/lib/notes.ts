@@ -31,8 +31,8 @@ export function getCourse(courseCode: string): CourseInfo | undefined {
 
 // ── Viewer helper ─────────────────────────────────────────────────────────────
 
-export function getNoteContent(courseCode: string, slug: string): string {
-  const filePath = path.join(NOTES_DIR, courseCode.toLowerCase(), `${slug}.mdx`);
+export function getNoteContent(courseCode: string, id: string): string {
+  const filePath = path.join(NOTES_DIR, courseCode.toLowerCase(), `${id}.mdx`);
   return fs.readFileSync(filePath, "utf-8");
 }
 

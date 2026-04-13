@@ -1,7 +1,7 @@
 export type NoteType = "notes" | "pdf";
 
 export interface LectureEntry {
-  slug: string;      // e.g. "01-stable-matching"
+  id: string;        // e.g. "01-stable-matching"
   title: string;     // e.g. "Stable Matching"
   type: NoteType;
   pdfUrl?: string;   // only present when type === "pdf"

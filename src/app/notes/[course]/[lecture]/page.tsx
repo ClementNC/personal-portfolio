@@ -11,8 +11,8 @@ export async function generateStaticParams() {
   return COURSES.flatMap((course) =>
     course.lectures.map((lecture) => ({
       course: course.code.toLowerCase(),
-      lecture: lecture.slug,
-    }))
+      lecture: lecture.id,
+    })),
   );
 }
 
@@ -23,8 +23,10 @@ export async function generateMetadata({
 }) {
   const { course, lecture } = await params;
   const courseInfo = getCourse(course);
-  const entry = courseInfo?.lectures.find((l) => l.slug === lecture);
-  const title = entry ? `${entry.title} | Clement Chow` : "Notes | Clement Chow";
+  const entry = courseInfo?.lectures.find((l) => l.id === lecture);
+  const title = entry
+    ? `${entry.title} | Clement Chow`
+    : "Notes | Clement Chow";
   return { title };
 }
 
@@ -35,7 +37,7 @@ export default async function LecturePage({
 }) {
   const { course, lecture } = await params;
   const courseInfo = getCourse(course);
-  const currentLecture = courseInfo?.lectures.find((l) => l.slug === lecture);
+  const currentLecture = courseInfo?.lectures.find((l) => l.id === lecture);
 
   let content: React.ReactElement | null = null;
 
@@ -44,11 +46,13 @@ export default async function LecturePage({
     const compiled = await compileMDX({
       source: raw,
       options: {
-        parseFrontmatter: true,
         mdxOptions: {
           remarkPlugins: [remarkMath],
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          rehypePlugins: [rehypeKatex as any, [rehypeShiki, { theme: "github-dark" }]],
+          rehypePlugins: [
+            rehypeKatex as any,
+            [rehypeShiki, { theme: "github-dark" }],
+          ],
         },
       },
       components: {

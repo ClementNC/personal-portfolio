@@ -37,7 +37,7 @@ function ViewerTopbar({
   activeLecture: string;
   lectures: LectureEntry[];
 }) {
-  const lectureTitle = lectures.find((l) => l.slug === activeLecture)?.title;
+  const lectureTitle = lectures.find((l) => l.id === activeLecture)?.title;
 
   return (
     <div className="h-10 shrink-0 flex items-center px-3 gap-3 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
@@ -77,7 +77,7 @@ function ViewerSidebar({
   activeLecture,
   open,
 }: {
-  courseCode: string;  // used to build lecture hrefs
+  courseCode: string; // used to build lecture hrefs
   lectures: LectureEntry[];
   activeLecture: string;
   open: boolean;
@@ -91,11 +91,11 @@ function ViewerSidebar({
       {/* Lecture list */}
       <nav className="flex-1 overflow-y-auto py-2">
         {lectures.map((lecture, i) => {
-          const isActive = lecture.slug === activeLecture;
+          const isActive = lecture.id === activeLecture;
           return (
             <Link
-              key={lecture.slug}
-              href={`/notes/${courseCode.toLowerCase()}/${lecture.slug}`}
+              key={lecture.id}
+              href={`/notes/${courseCode.toLowerCase()}/${lecture.id}`}
               className={`flex items-center gap-2 px-4 py-2 text-[12px] transition-colors duration-150 ${
                 isActive
                   ? "bg-(--bg-card) text-(--accent)"

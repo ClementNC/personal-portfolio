@@ -6,6 +6,6 @@ export const MATH235: CourseInfo = {
   term: "2A",
   termLabel: "2A  Fall 2022",
   lectures: [
-    { slug: "01-intro", title: "Introduction", type: "notes" },
+    { id: "01-intro", title: "Introduction", type: "notes" },
   ],
 };

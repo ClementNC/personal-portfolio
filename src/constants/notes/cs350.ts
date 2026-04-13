@@ -6,7 +6,7 @@ export const CS350: CourseInfo = {
   term: "3B",
   termLabel: "3B  Fall 2024",
   lectures: [
-    { slug: "01-intro-os", title: "Introduction to Operating Systems", type: "notes" },
-    { slug: "02-processes", title: "Processes and Threads", type: "notes" },
+    { id: "01-intro-os", title: "Introduction to Operating Systems", type: "notes" },
+    { id: "02-processes", title: "Processes and Threads", type: "notes" },
   ],
 };
