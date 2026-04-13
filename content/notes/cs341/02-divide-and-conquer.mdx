@@ -1,0 +1,22 @@
+## Divide and Conquer Paradigm
+
+Break a problem into smaller subproblems, solve recursively, combine results.
+
+**Master Theorem:** For $T(n) = aT(n/b) + f(n)$:
+
+- If $f(n) = O(n^{\log_b a - \epsilon})$ then $T(n) = \Theta(n^{\log_b a})$
+- If $f(n) = \Theta(n^{\log_b a})$ then $T(n) = \Theta(n^{\log_b a} \log n)$
+- If $f(n) = \Omega(n^{\log_b a + \epsilon})$ then $T(n) = \Theta(f(n))$
+
+## Merge Sort
+
+```
+MergeSort(A, lo, hi):
+  if lo >= hi: return
+  mid = (lo + hi) / 2
+  MergeSort(A, lo, mid)
+  MergeSort(A, mid+1, hi)
+  Merge(A, lo, mid, hi)
+```
+
+Recurrence: $T(n) = 2T(n/2) + O(n)$ → $T(n) = O(n \log n)$

@@ -1,0 +1,19 @@
+## Processes
+
+A **process** is a program in execution. The OS maintains a **PCB** (Process Control Block) for each process, storing:
+- Process ID (PID)
+- CPU registers
+- Memory mappings
+- Open file descriptors
+- Scheduling state
+
+## Threads
+
+A **thread** is a unit of execution within a process. Threads in the same process share address space and file descriptors but have their own stack and registers.
+
+**Why threads?** Parallelism without the overhead of separate address spaces.
+
+```c
+pthread_create(&tid, NULL, worker_fn, arg);
+pthread_join(tid, NULL);
+```

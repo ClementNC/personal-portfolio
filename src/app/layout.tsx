@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "@/styles/globals.css";
 import { Nav } from "@/components/ui/Nav";
-import { Footer } from "@/components/ui/Footer";
 import { TerminalProvider } from "@/context/TerminalContext";
 import { SITE_NAME } from "@/constants/site";
 
@@ -37,7 +36,6 @@ export default function RootLayout({
         <TerminalProvider>
           <Nav />
           {children}
-          <Footer />
         </TerminalProvider>
       </body>
     </html>
