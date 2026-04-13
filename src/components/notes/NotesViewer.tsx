@@ -138,7 +138,7 @@ function ViewerContent({
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="max-w-2xl mx-auto px-8 py-10 [&_h2]:text-[20px] [&_h2]:font-semibold [&_h2]:text-(--text-primary) [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[16px] [&_h3]:font-semibold [&_h3]:text-(--text-primary) [&_h3]:mt-6 [&_h3]:mb-2 [&_p]:text-[14px] [&_p]:text-(--text-body) [&_p]:leading-[1.75] [&_p]:mb-4 [&_strong]:text-(--text-primary) [&_code]:font-mono [&_code]:text-[13px] [&_code]:text-(--accent) [&_code]:bg-[rgba(175,169,236,0.08)] [&_code]:px-1 [&_code]:rounded-[3px] [&_ul]:text-[14px] [&_ul]:text-(--text-body) [&_ul]:leading-[1.75] [&_ul]:mb-4 [&_ul]:pl-5 [&_ul]:list-disc [&_ol]:text-[14px] [&_ol]:text-(--text-body) [&_ol]:leading-[1.75] [&_ol]:mb-4 [&_ol]:pl-5 [&_ol]:list-decimal">
+      <div className="max-w-2xl mx-auto px-8 py-10 markdown-notes">
         {content}
       </div>
     </div>

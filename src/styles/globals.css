@@ -170,6 +170,50 @@ body {
   transform-origin: bottom right;
 }
 
+/* ─── Notes prose — MDX content styling ─────────────────────────────────── */
+.markdown-notes h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.markdown-notes h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.markdown-notes p {
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+}
+.markdown-notes strong {
+  color: var(--text-primary);
+}
+/* Inline code only — block code is wrapped in CodeBlock's own <pre> */
+.markdown-notes :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  background: rgba(175, 169, 236, 0.08);
+  padding: 0 4px;
+  border-radius: 3px;
+}
+.markdown-notes ul,
+.markdown-notes ol {
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.75;
+  margin-bottom: 1rem;
+  padding-left: 1.25rem;
+}
+.markdown-notes ul { list-style-type: disc; }
+.markdown-notes ol { list-style-type: decimal; }
+
 /* ─── KaTeX overrides — match design palette ────────────────────────────── */
 .katex {
   font-size: 1em;

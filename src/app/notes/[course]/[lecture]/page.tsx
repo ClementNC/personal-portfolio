@@ -1,6 +1,7 @@
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import rehypeShiki from "@shikijs/rehype";
 import { COURSES } from "@/constants/notes";
 import { getCourse, getNoteContent } from "@/lib/notes";
 import { NotesViewer } from "@/components/notes/NotesViewer";
@@ -47,7 +48,7 @@ export default async function LecturePage({
         mdxOptions: {
           remarkPlugins: [remarkMath],
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          rehypePlugins: [rehypeKatex as any],
+          rehypePlugins: [rehypeKatex as any, [rehypeShiki, { theme: "github-dark" }]],
         },
       },
       components: {
