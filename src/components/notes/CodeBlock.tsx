@@ -6,7 +6,7 @@ interface CodeBlockProps {
 
 export function CodeBlock({ children }: CodeBlockProps) {
   return (
-    <div className="my-5 overflow-x-auto rounded-[4px] bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.1)] text-[13px]">
+    <div className="my-5 overflow-x-auto rounded-[4px] bg-(--bg-card) [border:var(--border-default)] text-[13px]">
       <pre className="p-4 leading-[1.65]">{children}</pre>
     </div>
   );

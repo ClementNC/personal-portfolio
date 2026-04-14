@@ -1,4 +1,6 @@
 import { compileMDX } from "next-mdx-remote/rsc";
+import { notFound } from "next/navigation";
+import type { Pluggable } from "unified";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeShiki from "@shikijs/rehype";
@@ -24,10 +26,9 @@ export async function generateMetadata({
   const { course, lecture } = await params;
   const courseInfo = getCourse(course);
   const entry = courseInfo?.lectures.find((l) => l.id === lecture);
-  const title = entry
-    ? `${entry.title} | Clement Chow`
-    : "Notes | Clement Chow";
-  return { title };
+  if (!courseInfo || !entry) notFound();
+
+  return { title: `${entry.title} | Clement Chow` };
 }
 
 export default async function LecturePage({
@@ -38,19 +39,19 @@ export default async function LecturePage({
   const { course, lecture } = await params;
   const courseInfo = getCourse(course);
   const currentLecture = courseInfo?.lectures.find((l) => l.id === lecture);
+  if (!courseInfo || !currentLecture) notFound();
 
   let content: React.ReactElement | null = null;
 
-  if (currentLecture?.type === "notes") {
+  if (currentLecture.type === "notes") {
     const raw = getNoteContent(course, lecture);
     const compiled = await compileMDX({
       source: raw,
       options: {
         mdxOptions: {
           remarkPlugins: [remarkMath],
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           rehypePlugins: [
-            rehypeKatex as any,
+            rehypeKatex as Pluggable,
             [rehypeShiki, { theme: "github-dark" }],
           ],
         },
@@ -65,10 +66,10 @@ export default async function LecturePage({
   return (
     <NotesViewer
       courseCode={course.toUpperCase()}
-      lectures={courseInfo?.lectures ?? []}
+      lectures={courseInfo.lectures}
       activeLecture={lecture}
       content={content}
-      pdfUrl={currentLecture?.pdfUrl}
+      pdfUrl={currentLecture.pdfUrl}
     />
   );
 }

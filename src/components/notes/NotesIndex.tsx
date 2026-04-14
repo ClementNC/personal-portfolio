@@ -9,6 +9,7 @@ import {
   HiArrowLongRight,
 } from "react-icons/hi2";
 import type { CourseInfo, TermGroup } from "@/types/notes";
+import { formatCourseCode } from "@/lib/format";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -18,10 +19,6 @@ interface NotesIndexProps {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function formatCourseCode(code: string) {
-  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
-}
-
 function CourseRow({ course }: { course: CourseInfo }) {
   const firstId = course.lectures[0]?.id;
   const href = firstId ? `/notes/${course.code.toLowerCase()}/${firstId}` : "#";
@@ -29,7 +26,7 @@ function CourseRow({ course }: { course: CourseInfo }) {
   return (
     <Link
       href={href}
-      className="group flex items-center gap-4 py-3 mb-1.5 last:mb-0 bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.08)] hover:bg-[rgba(175,169,236,0.06)] hover:[border-color:rgba(175,169,236,0.15)] transition-colors duration-150 px-3 rounded-[4px]"
+      className="group flex items-center gap-4 py-3 mb-1.5 last:mb-0 bg-(--bg-card) [border:var(--border-subtle)] hover:bg-[rgba(175,169,236,0.06)] hover:[border-color:var(--border-color-strong)] transition-colors duration-150 px-3 rounded-[4px]"
     >
       <span className="font-mono text-[13px] text-(--accent-mid) w-16 shrink-0">
         {formatCourseCode(course.code)}
@@ -76,7 +73,7 @@ function TermSection({
               className="text-(--text-dim) transition-colors duration-150"
             />
           )}
-          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-full px-2.5 py-0.5 whitespace-pre group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
+          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:var(--border-strong)] rounded-full px-2.5 py-0.5 whitespace-pre group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
             {group.termLabel}
           </span>
         </div>
@@ -88,15 +85,16 @@ function TermSection({
       </button>
 
       <div
-        className={`overflow-hidden transition-[max-height,opacity] duration-250 ease-in-out ${
-          open ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
+        className={`grid transition-[grid-template-rows,opacity] duration-[250ms] ease-in-out ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        {/* Left-border indentation (from code) */}
-        <div className="[border-left:0.5px_solid_rgba(175,169,236,0.08)] pl-5">
-          {group.courses.map((course) => (
-            <CourseRow key={course.code} course={course} />
-          ))}
+        <div className="overflow-hidden min-h-0">
+          <div className="[border-left:var(--border-subtle)] pl-5">
+            {group.courses.map((course) => (
+              <CourseRow key={course.code} course={course} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -142,7 +140,7 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
             type="text"
             placeholder="search by course code or name..."
             readOnly
-            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[4px] pl-8 pr-3 py-2 outline-none cursor-default"
+            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:var(--border-strong)] rounded-[4px] pl-8 pr-3 py-2 outline-none cursor-default"
           />
         </div>
 

@@ -23,6 +23,16 @@
   /* Layout */
   --nav-height: 56px;
 
+  /* Borders — 0.5px accent lines at graded opacities */
+  --border-subtle:  0.5px solid rgba(175, 169, 236, 0.08);
+  --border-default: 0.5px solid rgba(175, 169, 236, 0.10);
+  --border-strong:  0.5px solid rgba(175, 169, 236, 0.15);
+  --border-hover:   0.5px solid rgba(175, 169, 236, 0.28);
+
+  /* Border colour-only — for hover transitions on existing borders */
+  --border-color-strong: rgba(175, 169, 236, 0.15);
+  --border-color-hover:  rgba(175, 169, 236, 0.28);
+
   /* Semantic */
   --success: #3B6D11;
   --amber:   #BA7517;

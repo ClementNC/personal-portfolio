@@ -5,6 +5,7 @@ import Link from "next/link";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { HiArrowLongLeft } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
+import { formatCourseCode } from "@/lib/format";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -16,31 +17,21 @@ interface NotesViewerProps {
   pdfUrl?: string;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function formatCourseCode(code: string) {
-  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
-}
-
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function ViewerTopbar({
   open,
   onToggle,
   courseCode,
-  activeLecture,
-  lectures,
+  lectureTitle,
 }: {
   open: boolean;
   onToggle: () => void;
   courseCode: string;
-  activeLecture: string;
-  lectures: LectureEntry[];
+  lectureTitle: string | undefined;
 }) {
-  const lectureTitle = lectures.find((l) => l.id === activeLecture)?.title;
-
   return (
-    <div className="h-10 shrink-0 flex items-center px-3 gap-3 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
+    <div className="h-10 shrink-0 flex items-center px-3 gap-3 [border-bottom:var(--border-subtle)]">
       <Link
         href="/notes"
         className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
@@ -84,7 +75,7 @@ function ViewerSidebar({
 }) {
   return (
     <aside
-      className={`shrink-0 flex flex-col h-full [border-right:0.5px_solid_rgba(175,169,236,0.08)] transition-[width] duration-200 ease-in-out overflow-hidden ${
+      className={`shrink-0 flex flex-col h-full [border-right:var(--border-subtle)] transition-[width] duration-200 ease-in-out overflow-hidden ${
         open ? "w-[300px]" : "w-0"
       }`}
     >
@@ -138,7 +129,7 @@ function ViewerContent({
 
   return (
     <div className="flex-1 overflow-y-auto">
-      <div className="max-w-2xl mx-auto px-8 py-10 markdown-notes">
+      <div className="max-w-3xl mx-auto px-8 py-10 markdown-notes">
         {content}
       </div>
     </div>
@@ -155,15 +146,16 @@ export function NotesViewer({
   pdfUrl,
 }: NotesViewerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const lectureTitle = lectures.find((l) => l.id === activeLecture)?.title;
 
   return (
     <div className="flex flex-col h-[calc(100vh-var(--nav-height,56px))] bg-(--bg) overflow-hidden">
+      {lectureTitle && <h1 className="sr-only">{lectureTitle}</h1>}
       <ViewerTopbar
         open={sidebarOpen}
         onToggle={() => setSidebarOpen((prev) => !prev)}
         courseCode={courseCode}
-        activeLecture={activeLecture}
-        lectures={lectures}
+        lectureTitle={lectureTitle}
       />
       <div className="flex flex-1 overflow-hidden">
         <ViewerSidebar
