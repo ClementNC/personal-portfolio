@@ -3,9 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
+import { HiSearch } from "react-icons/hi";
 import { HiArrowLongLeft, HiArrowLongRight } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
 import { formatCourseCode } from "@/lib/format";
+import { getCourse } from "@/lib/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -39,70 +41,87 @@ function ViewerTopbar({
   const lectureHref = (id: string) =>
     `/notes/${courseCode.toLowerCase()}/${id}`;
 
-  return (
-    <div className="h-10 shrink-0 flex items-center px-3 [border-bottom:var(--border-subtle)]">
-      <div className="flex-1 flex items-center gap-3 min-w-0">
-        <Link
-          href={prevLecture ? lectureHref(prevLecture.id) : "/notes"}
-          className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
-          aria-label={
-            prevLecture
-              ? `Previous lecture: ${prevLecture.title}`
-              : "Back to notes"
-          }
-        >
-          <HiArrowLongLeft size={16} />
-        </Link>
+  const courseTitle = getCourse(courseCode)?.title;
 
+  return (
+    <div className="relative h-12 shrink-0 grid grid-cols-[1fr_auto_1fr] items-center px-3">
+      {/* Left: toggle + course info */}
+      <div className="flex items-center gap-3 min-w-0">
         <button
           onClick={onToggle}
           className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer shrink-0"
           aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         >
-          {open ? (
-            <LuPanelLeftClose size={14} />
-          ) : (
-            <LuPanelLeftOpen size={14} />
-          )}
+          {open ? <LuPanelLeftClose size={16} /> : <LuPanelLeftOpen size={16} />}
         </button>
-      </div>
-      <div className="flex-1 flex items-center justify-center gap-1.5 font-mono text-[12px] min-w-0">
-        <Link
-          href="/notes"
-          className="text-(--accent-mid) hover:text-(--accent) transition-colors duration-150 shrink-0"
-        >
+        <span className="font-mono text-[12px] text-(--text-muted) truncate">
           {formatCourseCode(courseCode)}
-        </Link>
-        <span className="text-(--text-dim) shrink-0">/</span>
-        <span className="text-(--text-body) font-semibold truncate">
+          {courseTitle && (
+            <span className="text-(--text-dim)"> · {courseTitle}</span>
+          )}
+        </span>
+      </div>
+
+      {/* Center: prev + title + next */}
+      <div className="flex items-center gap-2">
+        {prevLecture ? (
+          <Link
+            href={lectureHref(prevLecture.id)}
+            className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
+            aria-label={`Previous: ${prevLecture.title}`}
+          >
+            <HiArrowLongLeft size={16} />
+          </Link>
+        ) : (
+          <span
+            className="text-(--text-dim) opacity-30 shrink-0"
+            aria-hidden="true"
+          >
+            <HiArrowLongLeft size={16} />
+          </span>
+        )}
+        <span className="font-mono text-[12px] font-semibold text-(--text-body) whitespace-nowrap">
           {lectureTitle}
         </span>
-        {progress !== null && (
-          <>
-            <span className="text-(--text-dim) shrink-0">·</span>
-            <span className="text-(--text-dim) shrink-0 tabular-nums">
-              {progress}%
-            </span>
-          </>
-        )}
-      </div>
-      <div className="flex-1 flex items-center justify-end min-w-0">
         {nextLecture ? (
           <Link
             href={lectureHref(nextLecture.id)}
             className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
-            aria-label={`Next lecture: ${nextLecture.title}`}
+            aria-label={`Next: ${nextLecture.title}`}
           >
             <HiArrowLongRight size={16} />
           </Link>
         ) : (
           <span
-            className="text-(--text-dim) opacity-40 shrink-0"
+            className="text-(--text-dim) opacity-30 shrink-0"
             aria-hidden="true"
           >
             <HiArrowLongRight size={16} />
           </span>
         )}
+      </div>
+
+      {/* Right: search */}
+      <div className="flex items-center justify-end">
+        <div className="relative">
+          <HiSearch
+            size={12}
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--text-dim) pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="search..."
+            className="font-mono text-[11px] text-(--text-primary) bg-transparent placeholder:text-(--text-dim) [border:var(--border-subtle)] hover:[border:var(--border-default)] focus:[border:var(--border-default)] rounded-[4px] pl-7 pr-3 py-[3px] outline-none w-28 transition-all duration-150"
+          />
+        </div>
+      </div>
+
+      {/* Bottom edge: 2px scroll progress track */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[rgba(127,119,221,0.08)]">
+        <div
+          className="h-full bg-(--accent-mid) transition-[width] duration-100 ease-out"
+          style={{ width: `${progress ?? 0}%` }}
+        />
       </div>
     </div>
   );
@@ -122,7 +141,7 @@ function ViewerSidebar({
   return (
     <aside
       className={`shrink-0 flex flex-col h-full [border-right:var(--border-subtle)] transition-[width] duration-200 ease-in-out overflow-hidden ${
-        open ? "w-[300px]" : "w-0"
+        open ? "w-[var(--notes-sidebar-w)]" : "w-0"
       }`}
     >
       {/* Lecture list */}

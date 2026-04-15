@@ -1,9 +1,5 @@
-import fs from "fs";
-import path from "path";
 import { COURSES } from "@/constants/notes";
 import type { CourseInfo, TermGroup } from "@/types/notes";
-
-const NOTES_DIR = path.join(process.cwd(), "content/notes");
 
 // ── Index helpers ─────────────────────────────────────────────────────────────
 
@@ -27,13 +23,6 @@ export function getTermGroups(): TermGroup[] {
 
 export function getCourse(courseCode: string): CourseInfo | undefined {
   return COURSES.find((c) => c.code === courseCode.toUpperCase());
-}
-
-// ── Viewer helper ─────────────────────────────────────────────────────────────
-
-export function getNoteContent(courseCode: string, id: string): string {
-  const filePath = path.join(NOTES_DIR, courseCode.toLowerCase(), `${id}.mdx`);
-  return fs.readFileSync(filePath, "utf-8");
 }
 
 // ── Internal ──────────────────────────────────────────────────────────────────

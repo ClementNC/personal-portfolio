@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
 import type { Pluggable } from "unified";
@@ -5,7 +7,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeShiki from "@shikijs/rehype";
 import { COURSES } from "@/constants/notes";
-import { getCourse, getNoteContent } from "@/lib/notes";
+import { getCourse } from "@/lib/notes";
 import { NotesViewer } from "@/components/notes/NotesViewer";
 import { CodeBlock } from "@/components/notes/CodeBlock";
 
@@ -29,6 +31,13 @@ export async function generateMetadata({
   if (!courseInfo || !entry) notFound();
 
   return { title: `${entry.title} | Clement Chow` };
+}
+
+
+export function getNoteContent(courseCode: string, id: string): string {
+  const NOTES_DIR = path.join(process.cwd(), "content/notes");
+  const filePath = path.join(NOTES_DIR, courseCode.toLowerCase(), `${id}.mdx`);
+  return fs.readFileSync(filePath, "utf-8");
 }
 
 export default async function LecturePage({
