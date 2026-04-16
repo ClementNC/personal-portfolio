@@ -183,6 +183,59 @@ export function createFileSystem(): FileSystem {
   );
 
   const notes = new Directory("notes", { href: "/notes" });
+  
+  const chem120 = new Directory("chem120", { href: "/notes/chem120" });
+  notes.addChild(chem120);
+  
+  const co487 = new Directory("co487", { href: "/notes/co487" });
+  notes.addChild(co487);
+  
+  const cs136 = new Directory("cs136", { href: "/notes/cs136" });
+  notes.addChild(cs136);
+  const cs240 = new Directory("cs240", { href: "/notes/cs240" });
+  notes.addChild(cs240);
+  const cs241 = new Directory("cs241", { href: "/notes/cs241" });
+  notes.addChild(cs241);
+  const cs245 = new Directory("cs245", { href: "/notes/cs245" });
+  notes.addChild(cs245);
+  const cs246 = new Directory("cs246", { href: "/notes/cs246" });
+  notes.addChild(cs246);
+  const cs251 = new Directory("cs251", { href: "/notes/cs251" });
+  notes.addChild(cs251);
+  const cs341 = new Directory("cs341", { href: "/notes/cs341" });
+  notes.addChild(cs341);
+  const cs348 = new Directory("cs348", { href: "/notes/cs348" });
+  notes.addChild(cs348);
+  const cs350 = new Directory("cs350", { href: "/notes/cs350" });
+  notes.addChild(cs350);
+  const cs451 = new Directory("cs451", { href: "/notes/cs451" });
+  notes.addChild(cs451);
+
+  const math135 = new Directory("math135", { href: "/notes/math135" });
+  notes.addChild(math135);
+  const math136 = new Directory("math136", { href: "/notes/math136" });
+  notes.addChild(math136);
+  const math137 = new Directory("math137", { href: "/notes/math137" });
+  notes.addChild(math137);
+  const math138 = new Directory("math138", { href: "/notes/math138" });
+  notes.addChild(math138);
+  const math235 = new Directory("math235", { href: "/notes/math235" });
+  notes.addChild(math235);
+  const math237 = new Directory("math237", { href: "/notes/math237" });
+  notes.addChild(math237);
+  const math239 = new Directory("math239", { href: "/notes/math239" });
+  notes.addChild(math239);
+
+  const stat230 = new Directory("stat230", { href: "/notes/stat230" });
+  notes.addChild(stat230);
+  const stat231 = new Directory("stat231", { href: "/notes/stat231" });
+  notes.addChild(stat231);
+  const stat331 = new Directory("stat331", { href: "/notes/stat331" });
+  notes.addChild(stat331);
+  const stat341 = new Directory("stat341", { href: "/notes/stat341" });
+  notes.addChild(stat341);
+  const stat443 = new Directory("stat443", { href: "/notes/stat443" });
+  notes.addChild(stat443);
 
   const root = new Directory("~");
   root.addChild(about);
