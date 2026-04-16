@@ -5,7 +5,5 @@ export const CHEM120: CourseInfo = {
   title: "General Chemistry",
   term: "4A",
   termLabel: "4A  Fall 2025",
-  lectures: [
-    { id: "01-intro", title: "Introduction", type: "notes" },
-  ],
+  lectures: [],
 };
