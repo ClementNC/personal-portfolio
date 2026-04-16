@@ -1,6 +1,10 @@
 import { COURSES } from "@/constants/notes";
 import type { CourseInfo, TermGroup } from "@/types/notes";
 
+export function formatCourseCode(code: string): string {
+  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
+}
+
 // ── Index helpers ─────────────────────────────────────────────────────────────
 
 export function getTermGroups(): TermGroup[] {

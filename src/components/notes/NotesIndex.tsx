@@ -9,7 +9,7 @@ import {
   HiArrowLongRight,
 } from "react-icons/hi2";
 import type { CourseInfo, TermGroup } from "@/types/notes";
-import { formatCourseCode } from "@/lib/format";
+import { formatCourseCode } from "@/lib/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

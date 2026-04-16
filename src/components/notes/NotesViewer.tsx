@@ -1,12 +1,13 @@
 "use client";
 
+import type { ReactElement } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
 import { HiSearch } from "react-icons/hi";
 import { HiArrowLongLeft, HiArrowLongRight } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
-import { formatCourseCode } from "@/lib/format";
+import { formatCourseCode } from "@/lib/notes";
 import { getCourse } from "@/lib/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -15,7 +16,7 @@ interface NotesViewerProps {
   courseCode: string;
   lectures: LectureEntry[];
   activeLecture: string;
-  content: React.ReactElement | null;
+  content: ReactElement | null;
   pdfUrl?: string;
 }
 
@@ -40,6 +41,7 @@ function ViewerTopbar({
 }) {
   const lectureHref = (id: string) =>
     `/notes/${courseCode.toLowerCase()}/${id}`;
+  const notesIndexHref = '/notes';
 
   const courseTitle = getCourse(courseCode)?.title;
 
@@ -64,26 +66,17 @@ function ViewerTopbar({
 
       {/* Center: prev + title + next */}
       <div className="flex items-center gap-2">
-        {prevLecture ? (
-          <Link
-            href={lectureHref(prevLecture.id)}
-            className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
-            aria-label={`Previous: ${prevLecture.title}`}
-          >
-            <HiArrowLongLeft size={16} />
-          </Link>
-        ) : (
-          <span
-            className="text-(--text-dim) opacity-30 shrink-0"
-            aria-hidden="true"
-          >
-            <HiArrowLongLeft size={16} />
-          </span>
-        )}
+        <Link
+          href={prevLecture ? lectureHref(prevLecture.id) : notesIndexHref}
+          className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
+          aria-label={`Previous: ${prevLecture ? prevLecture.title : "Back to Notes Index"}`}
+        >
+          <HiArrowLongLeft size={16} />
+        </Link>
         <span className="font-mono text-[12px] font-semibold text-(--text-body) whitespace-nowrap">
           {lectureTitle}
         </span>
-        {nextLecture ? (
+        {nextLecture && (
           <Link
             href={lectureHref(nextLecture.id)}
             className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
@@ -91,13 +84,6 @@ function ViewerTopbar({
           >
             <HiArrowLongRight size={16} />
           </Link>
-        ) : (
-          <span
-            className="text-(--text-dim) opacity-30 shrink-0"
-            aria-hidden="true"
-          >
-            <HiArrowLongRight size={16} />
-          </span>
         )}
       </div>
 
@@ -180,7 +166,7 @@ function ViewerContent({
   pdfUrl,
   onProgressChange,
 }: {
-  content: React.ReactElement | null;
+  content: ReactElement | null;
   pdfUrl?: string;
   onProgressChange?: (pct: number | null) => void;
 }) {

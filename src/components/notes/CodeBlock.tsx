@@ -1,7 +1,9 @@
+import type { ReactNode, CSSProperties } from "react";
+
 interface CodeBlockProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string; // shiki injects "shiki github-dark" — ignored, styled via wrapper
-  style?: React.CSSProperties; // shiki injects background-color inline — overridden below
+  style?: CSSProperties; // shiki injects background-color inline — overridden below
 }
 
 export function CodeBlock({ children }: CodeBlockProps) {
