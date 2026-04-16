@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { notFound } from "next/navigation";
+import type { ReactElement } from "react";
 import type { Pluggable } from "unified";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -50,7 +51,7 @@ export default async function LecturePage({
   const currentLecture = courseInfo?.lectures.find((l) => l.id === lecture);
   if (!courseInfo || !currentLecture) notFound();
 
-  let content: React.ReactElement | null = null;
+  let content: ReactElement | null = null;
 
   if (currentLecture.type === "notes") {
     const raw = getNoteContent(course, lecture);
