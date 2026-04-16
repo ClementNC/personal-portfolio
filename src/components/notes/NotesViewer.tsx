@@ -225,7 +225,19 @@ export function NotesViewer({
   content,
   pdfUrl,
 }: NotesViewerProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window === "undefined") return true;
+    const stored = localStorage.getItem("notes-sidebar-open");
+    return stored === null ? true : stored === "true";
+  });
+
+  function toggleSidebar() {
+    setSidebarOpen((prev) => {
+      const next = !prev;
+      localStorage.setItem("notes-sidebar-open", String(next));
+      return next;
+    });
+  }
   const [progress, setProgress] = useState<number | null>(null);
   const currentIndex = lectures.findIndex((l) => l.id === activeLecture);
   const lectureTitle = lectures[currentIndex]?.title;
@@ -240,7 +252,7 @@ export function NotesViewer({
       {lectureTitle && <h1 className="sr-only">{lectureTitle}</h1>}
       <ViewerTopbar
         open={sidebarOpen}
-        onToggle={() => setSidebarOpen((prev) => !prev)}
+        onToggle={toggleSidebar}
         courseCode={courseCode}
         lectureTitle={lectureTitle}
         prevLecture={prevLecture}
