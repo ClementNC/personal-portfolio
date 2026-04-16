@@ -13,6 +13,7 @@ export interface CourseInfo {
   term: string;      // e.g. "3B"
   termLabel: string; // e.g. "3B  Fall 2024"
   lectures: LectureEntry[];
+  isCourseComplete: boolean;
 }
 
 export interface TermGroup {

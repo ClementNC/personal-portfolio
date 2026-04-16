@@ -9,4 +9,5 @@ export const CS350: CourseInfo = {
     { id: "01-intro-os", title: "Introduction to Operating Systems", type: "notes" },
     { id: "02-processes", title: "Processes and Threads", type: "notes" },
   ],
+  isCourseComplete: true,
 };

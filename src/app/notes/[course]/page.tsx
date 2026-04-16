@@ -1,3 +1,4 @@
+import { CourseEmptyState } from '@/components/notes/CourseEmptyState';
 import { getCourse } from '@/lib/notes';
 import { notFound, redirect } from "next/navigation";
 
@@ -16,7 +17,7 @@ export default async function CourseIndexPage({
   if (firstLectureId) {
     redirect(`/notes/${course.toLowerCase()}/${firstLectureId}`);
   }
- 
-  // TODO: render empty state component here
-  notFound();
+  
+  const isInProgress = !courseInfo.isCourseComplete && courseInfo.lectures.length === 0;
+  return(<CourseEmptyState isInProgress={isInProgress} />);
 }

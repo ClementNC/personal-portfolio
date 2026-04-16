@@ -148,11 +148,6 @@ function ViewerSidebar({
                 L{i + 1}
               </span>
               <span className="truncate">{lecture.title}</span>
-              {lecture.type === "pdf" && (
-                <span className="font-mono text-[10px] text-(--amber) shrink-0">
-                  pdf
-                </span>
-              )}
             </Link>
           );
         })}

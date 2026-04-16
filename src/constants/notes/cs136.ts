@@ -8,4 +8,5 @@ export const CS136: CourseInfo = {
   lectures: [
     { id: "01-intro", title: "Introduction", type: "notes" },
   ],
+  isCourseComplete: true,
 };

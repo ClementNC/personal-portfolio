@@ -6,4 +6,5 @@ export const STAT230: CourseInfo = {
   term: "2A",
   termLabel: "2A  Fall 2022",
   lectures: [{ id: "01-intro", title: "Introduction", type: "notes" }],
+  isCourseComplete: true,
 };

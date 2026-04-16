@@ -9,4 +9,5 @@ export const CS341: CourseInfo = {
     { id: "01-stable-matching", title: "Stable Matching", type: "notes" },
     { id: "02-divide-and-conquer", title: "Divide and Conquer", type: "notes" },
   ],
+  isCourseComplete: true,
 };

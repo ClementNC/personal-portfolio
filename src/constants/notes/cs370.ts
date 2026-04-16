@@ -6,4 +6,5 @@ export const CS370: CourseInfo = {
   term: "4B",
   termLabel: "4B  Spring 2026",
   lectures: [],
+  isCourseComplete: false,
 };

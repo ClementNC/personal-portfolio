@@ -6,4 +6,5 @@ export const CHEM120: CourseInfo = {
   term: "4A",
   termLabel: "4A  Fall 2025",
   lectures: [],
+  isCourseComplete: true,
 };
