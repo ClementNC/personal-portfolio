@@ -21,7 +21,7 @@ export function Contact() {
 
       <a
         href={`mailto:${SOCIAL_LINKS.Email}`}
-        className="inline-flex items-center gap-[6px] font-mono text-[12px] text-(--text-muted) rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-(--accent) px-[16px] py-[8px] transition-colors duration-[180ms] ease-linear"
+        className="inline-flex items-center gap-[6px] font-mono text-[12px] text-(--text-muted) rounded-[6px] [border:var(--border-strong)] hover:[border-color:var(--border-color-hover)] hover:text-(--accent) px-[16px] py-[8px] transition-colors duration-[180ms] ease-linear"
       >
         <TbSend size={13} />
         Contact me

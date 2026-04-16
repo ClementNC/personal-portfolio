@@ -1,7 +1,8 @@
+import type { Metadata } from "next";
 import { getTermGroups } from "@/lib/notes";
 import { NotesIndex } from "@/components/notes/NotesIndex";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Notes | Clement Chow",
 };
 

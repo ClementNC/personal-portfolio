@@ -9,6 +9,7 @@ import {
   HiArrowLongRight,
 } from "react-icons/hi2";
 import type { CourseInfo, TermGroup } from "@/types/notes";
+import { formatCourseCode } from "@/lib/format";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -18,10 +19,6 @@ interface NotesIndexProps {
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function formatCourseCode(code: string) {
-  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
-}
-
 function CourseRow({ course }: { course: CourseInfo }) {
   const firstId = course.lectures[0]?.id;
   const href = firstId ? `/notes/${course.code.toLowerCase()}/${firstId}` : "#";
@@ -29,7 +26,7 @@ function CourseRow({ course }: { course: CourseInfo }) {
   return (
     <Link
       href={href}
-      className="group flex items-center gap-4 py-3 mb-1.5 last:mb-0 bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.08)] hover:bg-[rgba(175,169,236,0.06)] hover:[border-color:rgba(175,169,236,0.15)] transition-colors duration-150 px-3 rounded-[4px]"
+      className="group flex items-center gap-4 py-3 mb-1.5 last:mb-0 bg-(--bg-card) [border:var(--border-subtle)] hover:bg-[rgba(175,169,236,0.06)] hover:[border-color:var(--border-color-strong)] transition-colors duration-150 px-3 rounded-[4px]"
     >
       <span className="font-mono text-[13px] text-(--accent-mid) w-16 shrink-0">
         {formatCourseCode(course.code)}
@@ -76,7 +73,7 @@ function TermSection({
               className="text-(--text-dim) transition-colors duration-150"
             />
           )}
-          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-full px-2.5 py-0.5 whitespace-pre group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
+          <span className="font-mono text-[12px] text-(--accent-mid) bg-[rgba(175,169,236,0.08)] [border:var(--border-strong)] rounded-full px-2.5 py-0.5 whitespace-pre group-hover:text-(--accent) group-hover:bg-[rgba(175,169,236,0.12)] transition-colors duration-150">
             {group.termLabel}
           </span>
         </div>
@@ -88,15 +85,16 @@ function TermSection({
       </button>
 
       <div
-        className={`overflow-hidden transition-[max-height,opacity] duration-250 ease-in-out ${
-          open ? "max-h-[800px] opacity-100" : "max-h-0 opacity-0"
+        className={`grid transition-[grid-template-rows,opacity] duration-[250ms] ease-in-out ${
+          open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
         }`}
       >
-        {/* Left-border indentation (from code) */}
-        <div className="[border-left:0.5px_solid_rgba(175,169,236,0.08)] pl-5">
-          {group.courses.map((course) => (
-            <CourseRow key={course.code} course={course} />
-          ))}
+        <div className="overflow-hidden min-h-0">
+          <div className="[border-left:var(--border-subtle)] pl-5">
+            {group.courses.map((course) => (
+              <CourseRow key={course.code} course={course} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -109,10 +107,28 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
   const [openTerms, setOpenTerms] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(termGroups.map((g) => [g.term, true])),
   );
+  const [searchTerm, setSearchTerm] = useState("");
 
   function toggleTerm(term: string) {
     setOpenTerms((prev) => ({ ...prev, [term]: !prev[term] }));
   }
+
+  const isSearching = searchTerm.trim().length > 0;
+
+  const displayGroups = isSearching
+    ? termGroups
+        .map((group) => ({
+          ...group,
+          courses: group.courses.filter((c) => {
+            const q = searchTerm.toLowerCase();
+            return (
+              c.code.toLowerCase().includes(q) ||
+              c.title.toLowerCase().includes(q)
+            );
+          }),
+        }))
+        .filter((group) => group.courses.length > 0)
+    : termGroups;
 
   return (
     <main className="min-h-screen bg-(--bg) px-6 py-16">
@@ -132,7 +148,7 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
           </p>
         </div>
 
-        {/* Search — placeholder only, logic added in a separate change */}
+        {/* Search */}
         <div className="relative w-full max-w-xs mb-10">
           <HiSearch
             size={13}
@@ -141,20 +157,27 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
           <input
             type="text"
             placeholder="search by course code or name..."
-            readOnly
-            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[4px] pl-8 pr-3 py-2 outline-none cursor-default"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:var(--border-strong)] focus:[border-color:var(--border-color-hover)] rounded-[4px] pl-8 pr-3 py-2 outline-none transition-colors duration-150"
           />
         </div>
 
         {/* Term groups */}
-        {termGroups.map((group) => (
-          <TermSection
-            key={group.term}
-            group={group}
-            open={openTerms[group.term] ?? true}
-            onToggle={() => toggleTerm(group.term)}
-          />
-        ))}
+        {displayGroups.length === 0 ? (
+          <p className="font-mono text-[13px] text-(--text-dim)">
+            no results for &ldquo;{searchTerm}&rdquo;
+          </p>
+        ) : (
+          displayGroups.map((group) => (
+            <TermSection
+              key={group.term}
+              group={group}
+              open={isSearching || (openTerms[group.term] ?? true)}
+              onToggle={isSearching ? () => {} : () => toggleTerm(group.term)}
+            />
+          ))
+        )}
       </div>
     </main>
   );

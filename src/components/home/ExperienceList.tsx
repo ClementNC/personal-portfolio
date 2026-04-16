@@ -57,7 +57,7 @@ export function ExperienceList() {
       <SectionHeader title="experience" />
 
       {/* Timeline — border-left forms the vertical line */}
-      <div className="[border-left:0.5px_solid_rgba(175,169,236,0.1)] ml-[6px]">
+      <div className="[border-left:var(--border-default)] ml-[6px]">
         {visible.map((entry) => (
           <ExperienceItem key={entry.company} entry={entry} />
         ))}
@@ -79,7 +79,7 @@ export function ExperienceList() {
       {hidden.length > 0 && (
         <button
           onClick={() => setExpanded((prev) => !prev)}
-          className="font-mono inline-flex items-center gap-[6px] mt-[14px] [border:0.5px_solid_rgba(175,169,236,0.10)] rounded-[6px] px-[14px] py-[6px] text-[11px] text-(--text-dim) hover:text-(--accent) hover:[border-color:rgba(175,169,236,0.25)] transition-colors duration-150 cursor-pointer"
+          className="font-mono inline-flex items-center gap-[6px] mt-[14px] [border:var(--border-default)] rounded-[6px] px-[14px] py-[6px] text-[11px] text-(--text-dim) hover:text-(--accent) hover:[border-color:var(--border-color-hover)] transition-colors duration-150 cursor-pointer"
         >
           <span>{expanded ? "show less" : `show ${hidden.length} more`}</span>
         </button>

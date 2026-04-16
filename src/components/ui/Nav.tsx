@@ -36,7 +36,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
-              className={`inline-flex items-center font-mono text-[13px] px-[16px] py-[4px] transition-colors duration-[150ms] [border-left:0.5px_solid_rgba(175,169,236,0.07)] text-(--text-dim) hover:text-(--accent) hover:bg-[rgba(175,169,236,0.05)] ${isLast ? "[border-right:0.5px_solid_rgba(175,169,236,0.07)]" : ""}`}
+              className={`inline-flex items-center font-mono text-[13px] px-[16px] py-[4px] transition-colors duration-[150ms] [border-left:var(--border-subtle)] text-(--text-dim) hover:text-(--accent) hover:bg-[rgba(175,169,236,0.05)] ${isLast ? "[border-right:var(--border-subtle)]" : ""}`}
             >
               {link.label}
             </Link>

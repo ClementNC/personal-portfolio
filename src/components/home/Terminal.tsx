@@ -147,7 +147,7 @@ function TerminalWindow({
   return (
     <>
       {/* macOS-style titlebar — dots left, path centred */}
-      <div className="flex items-center justify-between px-3 py-[9px] [border-bottom:0.5px_solid_rgba(175,169,236,0.08)] shrink-0">
+      <div className="flex items-center justify-between px-3 py-[9px] [border-bottom:var(--border-subtle)] shrink-0">
         <div className="flex items-center gap-[6px]">
           <button
             onClick={onClose}
@@ -640,7 +640,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       {state === "panel" && (
         <div
           className={cn(
-            "fixed bottom-6 right-6 z-50 w-[300px] h-[380px] bg-(--bg-term) [border:0.5px_solid_rgba(175,169,236,0.15)] rounded-[8px] flex flex-col overflow-hidden shadow-2xl",
+            "fixed bottom-6 right-6 z-50 w-[300px] h-[380px] bg-(--bg-term) [border:var(--border-strong)] rounded-[8px] flex flex-col overflow-hidden shadow-2xl",
             animationClass,
           )}
           onAnimationEnd={isMinimising ? handleMinimiseEnd : undefined}

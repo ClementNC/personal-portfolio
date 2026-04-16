@@ -62,7 +62,7 @@ export function Hero() {
       {/* ── Right column ── */}
       <div className="flex flex-col items-end gap-3 shrink-0">
         {/* Avatar circle */}
-        <div className="w-[148px] h-[148px] rounded-full bg-(--bg-card) [border:0.5px_solid_rgba(175,169,236,0.15)] flex flex-col items-center justify-center gap-[6px]">
+        <div className="w-[148px] h-[148px] rounded-full bg-(--bg-card) [border:var(--border-strong)] flex flex-col items-center justify-center gap-[6px]">
           <RxAvatar size={48} className="text-(--accent)" />
           <span className="font-mono text-[10px] text-(--text-dim)">
             // avatar
@@ -72,7 +72,7 @@ export function Hero() {
         {/* Get in touch button — scrolls to the contact section */}
         <button
           onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-          className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-(--text-muted) rounded-[6px] [border:0.5px_solid_rgba(175,169,236,0.15)] hover:[border-color:rgba(175,169,236,0.28)] hover:text-(--accent) transition-colors duration-[180ms] ease-linear cursor-pointer"
+          className="w-[148px] py-[6px] flex items-center justify-center gap-[6px] font-mono text-[11px] text-(--text-muted) rounded-[6px] [border:var(--border-strong)] hover:[border-color:var(--border-color-hover)] hover:text-(--accent) transition-colors duration-[180ms] ease-linear cursor-pointer"
         >
           <TbSend size={13} />
           Get in touch

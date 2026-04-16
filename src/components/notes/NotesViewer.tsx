@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { HiArrowLongLeft } from "react-icons/hi2";
+import { HiSearch } from "react-icons/hi";
+import { HiArrowLongLeft, HiArrowLongRight } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
+import { formatCourseCode } from "@/lib/format";
+import { getCourse } from "@/lib/notes";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -16,56 +19,109 @@ interface NotesViewerProps {
   pdfUrl?: string;
 }
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function formatCourseCode(code: string) {
-  return code.replace(/([A-Za-z]+)(\d+)/, "$1 $2");
-}
-
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function ViewerTopbar({
   open,
   onToggle,
   courseCode,
-  activeLecture,
-  lectures,
+  lectureTitle,
+  prevLecture,
+  nextLecture,
+  progress,
 }: {
   open: boolean;
   onToggle: () => void;
   courseCode: string;
-  activeLecture: string;
-  lectures: LectureEntry[];
+  lectureTitle: string | undefined;
+  prevLecture: LectureEntry | null;
+  nextLecture: LectureEntry | null;
+  progress: number | null;
 }) {
-  const lectureTitle = lectures.find((l) => l.id === activeLecture)?.title;
+  const lectureHref = (id: string) =>
+    `/notes/${courseCode.toLowerCase()}/${id}`;
+
+  const courseTitle = getCourse(courseCode)?.title;
 
   return (
-    <div className="h-10 shrink-0 flex items-center px-3 gap-3 [border-bottom:0.5px_solid_rgba(175,169,236,0.08)]">
-      <Link
-        href="/notes"
-        className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
-        aria-label="Back to notes"
-      >
-        <HiArrowLongLeft size={16} />
-      </Link>
-
-      <button
-        onClick={onToggle}
-        className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer shrink-0"
-        aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
-      >
-        {open ? <LuPanelLeftClose size={14} /> : <LuPanelLeftOpen size={14} />}
-      </button>
-
-      <div className="flex items-center gap-1.5 font-mono text-[12px] min-w-0">
-        <Link
-          href="/notes"
-          className="text-(--accent-mid) hover:text-(--accent) transition-colors duration-150 shrink-0"
+    <div className="relative h-12 shrink-0 grid grid-cols-[1fr_auto_1fr] items-center px-3">
+      {/* Left: toggle + course info */}
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          onClick={onToggle}
+          className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer shrink-0"
+          aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         >
+          {open ? <LuPanelLeftClose size={16} /> : <LuPanelLeftOpen size={16} />}
+        </button>
+        <span className="font-mono text-[12px] text-(--text-muted) truncate">
           {formatCourseCode(courseCode)}
-        </Link>
-        <span className="text-(--text-dim) shrink-0">/</span>
-        <span className="text-(--text-muted) truncate">{lectureTitle}</span>
+          {courseTitle && (
+            <span className="text-(--text-dim)"> · {courseTitle}</span>
+          )}
+        </span>
+      </div>
+
+      {/* Center: prev + title + next */}
+      <div className="flex items-center gap-2">
+        {prevLecture ? (
+          <Link
+            href={lectureHref(prevLecture.id)}
+            className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
+            aria-label={`Previous: ${prevLecture.title}`}
+          >
+            <HiArrowLongLeft size={16} />
+          </Link>
+        ) : (
+          <span
+            className="text-(--text-dim) opacity-30 shrink-0"
+            aria-hidden="true"
+          >
+            <HiArrowLongLeft size={16} />
+          </span>
+        )}
+        <span className="font-mono text-[12px] font-semibold text-(--text-body) whitespace-nowrap">
+          {lectureTitle}
+        </span>
+        {nextLecture ? (
+          <Link
+            href={lectureHref(nextLecture.id)}
+            className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
+            aria-label={`Next: ${nextLecture.title}`}
+          >
+            <HiArrowLongRight size={16} />
+          </Link>
+        ) : (
+          <span
+            className="text-(--text-dim) opacity-30 shrink-0"
+            aria-hidden="true"
+          >
+            <HiArrowLongRight size={16} />
+          </span>
+        )}
+      </div>
+
+      {/* Right: search */}
+      <div className="flex items-center justify-end">
+        <div className="relative">
+          <HiSearch
+            size={12}
+            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--text-dim) pointer-events-none"
+          />
+          <input
+            type="text"
+            placeholder="search..."
+            className="font-mono text-[11px] text-(--text-primary) bg-transparent placeholder:text-(--text-dim) [border:var(--border-subtle)] hover:[border:var(--border-default)] focus:[border:var(--border-default)] rounded-[4px] pl-7 pr-3 py-[3px] outline-none w-28 transition-all duration-150"
+          />
+        </div>
+      </div>
+
+      {/* Bottom edge: 2px scroll progress track */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[rgba(127,119,221,0.08)]">
+        <div
+          className="h-full bg-(--accent-mid) transition-[width] duration-100 ease-out"
+          style={{ width: `${progress ?? 0}%` }}
+        />
       </div>
     </div>
   );
@@ -84,8 +140,8 @@ function ViewerSidebar({
 }) {
   return (
     <aside
-      className={`shrink-0 flex flex-col h-full [border-right:0.5px_solid_rgba(175,169,236,0.08)] transition-[width] duration-200 ease-in-out overflow-hidden ${
-        open ? "w-[300px]" : "w-0"
+      className={`shrink-0 flex flex-col h-full [border-right:var(--border-subtle)] transition-[width] duration-200 ease-in-out overflow-hidden ${
+        open ? "w-[var(--notes-sidebar-w)]" : "w-0"
       }`}
     >
       {/* Lecture list */}
@@ -122,10 +178,44 @@ function ViewerSidebar({
 function ViewerContent({
   content,
   pdfUrl,
+  onProgressChange,
 }: {
   content: React.ReactElement | null;
   pdfUrl?: string;
+  onProgressChange?: (pct: number | null) => void;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (pdfUrl) return;
+    const el = scrollRef.current;
+    if (!el || !onProgressChange) return;
+
+    let lastReported = -1;
+    const update = () => {
+      const max = el.scrollHeight - el.clientHeight;
+      if (max <= 0) {
+        if (lastReported !== -1) {
+          lastReported = -1;
+          onProgressChange(null);
+        }
+        return;
+      }
+      const pct = Math.min(
+        100,
+        Math.max(0, Math.round((el.scrollTop / max) * 100)),
+      );
+      if (pct !== lastReported) {
+        lastReported = pct;
+        onProgressChange(pct);
+      }
+    };
+
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    return () => el.removeEventListener("scroll", update);
+  }, [pdfUrl, content, onProgressChange]);
+
   if (pdfUrl) {
     return (
       <iframe
@@ -137,8 +227,8 @@ function ViewerContent({
   }
 
   return (
-    <div className="flex-1 overflow-y-auto">
-      <div className="max-w-2xl mx-auto px-8 py-10 markdown-notes">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+      <div className="max-w-3xl mx-auto px-8 py-10 markdown-notes">
         {content}
       </div>
     </div>
@@ -155,15 +245,26 @@ export function NotesViewer({
   pdfUrl,
 }: NotesViewerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [progress, setProgress] = useState<number | null>(null);
+  const currentIndex = lectures.findIndex((l) => l.id === activeLecture);
+  const lectureTitle = lectures[currentIndex]?.title;
+  const prevLecture = currentIndex > 0 ? lectures[currentIndex - 1] : null;
+  const nextLecture =
+    currentIndex >= 0 && currentIndex < lectures.length - 1
+      ? lectures[currentIndex + 1]
+      : null;
 
   return (
     <div className="flex flex-col h-[calc(100vh-var(--nav-height,56px))] bg-(--bg) overflow-hidden">
+      {lectureTitle && <h1 className="sr-only">{lectureTitle}</h1>}
       <ViewerTopbar
         open={sidebarOpen}
         onToggle={() => setSidebarOpen((prev) => !prev)}
         courseCode={courseCode}
-        activeLecture={activeLecture}
-        lectures={lectures}
+        lectureTitle={lectureTitle}
+        prevLecture={prevLecture}
+        nextLecture={nextLecture}
+        progress={progress}
       />
       <div className="flex flex-1 overflow-hidden">
         <ViewerSidebar
@@ -172,7 +273,11 @@ export function NotesViewer({
           activeLecture={activeLecture}
           open={sidebarOpen}
         />
-        <ViewerContent content={content} pdfUrl={pdfUrl} />
+        <ViewerContent
+          content={content}
+          pdfUrl={pdfUrl}
+          onProgressChange={setProgress}
+        />
       </div>
     </div>
   );
