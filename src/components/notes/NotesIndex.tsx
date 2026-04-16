@@ -107,10 +107,28 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
   const [openTerms, setOpenTerms] = useState<Record<string, boolean>>(() =>
     Object.fromEntries(termGroups.map((g) => [g.term, true])),
   );
+  const [searchTerm, setSearchTerm] = useState("");
 
   function toggleTerm(term: string) {
     setOpenTerms((prev) => ({ ...prev, [term]: !prev[term] }));
   }
+
+  const isSearching = searchTerm.trim().length > 0;
+
+  const displayGroups = isSearching
+    ? termGroups
+        .map((group) => ({
+          ...group,
+          courses: group.courses.filter((c) => {
+            const q = searchTerm.toLowerCase();
+            return (
+              c.code.toLowerCase().includes(q) ||
+              c.title.toLowerCase().includes(q)
+            );
+          }),
+        }))
+        .filter((group) => group.courses.length > 0)
+    : termGroups;
 
   return (
     <main className="min-h-screen bg-(--bg) px-6 py-16">
@@ -130,7 +148,7 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
           </p>
         </div>
 
-        {/* Search — placeholder only, logic added in a separate change */}
+        {/* Search */}
         <div className="relative w-full max-w-xs mb-10">
           <HiSearch
             size={13}
@@ -139,20 +157,27 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
           <input
             type="text"
             placeholder="search by course code or name..."
-            readOnly
-            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:var(--border-strong)] rounded-[4px] pl-8 pr-3 py-2 outline-none cursor-default"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full font-mono text-[13px] text-(--text-primary) bg-(--bg-card) placeholder:text-(--text-dim) [border:var(--border-strong)] focus:[border-color:var(--border-color-hover)] rounded-[4px] pl-8 pr-3 py-2 outline-none transition-colors duration-150"
           />
         </div>
 
         {/* Term groups */}
-        {termGroups.map((group) => (
-          <TermSection
-            key={group.term}
-            group={group}
-            open={openTerms[group.term] ?? true}
-            onToggle={() => toggleTerm(group.term)}
-          />
-        ))}
+        {displayGroups.length === 0 ? (
+          <p className="font-mono text-[13px] text-(--text-dim)">
+            no results for &ldquo;{searchTerm}&rdquo;
+          </p>
+        ) : (
+          displayGroups.map((group) => (
+            <TermSection
+              key={group.term}
+              group={group}
+              open={isSearching || (openTerms[group.term] ?? true)}
+              onToggle={isSearching ? () => {} : () => toggleTerm(group.term)}
+            />
+          ))
+        )}
       </div>
     </main>
   );
