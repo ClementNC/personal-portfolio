@@ -20,8 +20,7 @@ interface NotesIndexProps {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function CourseRow({ course }: { course: CourseInfo }) {
-  const firstId = course.lectures[0]?.id;
-  const href = firstId ? `/notes/${course.code.toLowerCase()}/${firstId}` : "#";
+  const href = `/notes/${course.code.toLowerCase()}`;
 
   return (
     <Link
