@@ -41,7 +41,7 @@ function ViewerTopbar({
 }) {
   const lectureHref = (id: string) =>
     `/notes/${courseCode.toLowerCase()}/${id}`;
-  const notesIndexHref = '/notes';
+  const notesIndexHref = "/notes";
 
   const courseTitle = getCourse(courseCode)?.title;
 
@@ -54,7 +54,11 @@ function ViewerTopbar({
           className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 cursor-pointer shrink-0"
           aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         >
-          {open ? <LuPanelLeftClose size={16} /> : <LuPanelLeftOpen size={16} />}
+          {open ? (
+            <LuPanelLeftClose size={16} />
+          ) : (
+            <LuPanelLeftOpen size={16} />
+          )}
         </button>
         <span className="font-mono text-[12px] text-(--text-muted) truncate">
           {formatCourseCode(courseCode)}
@@ -88,7 +92,7 @@ function ViewerTopbar({
       </div>
 
       {/* Right: search */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end pr-6">
         <div className="relative">
           <HiSearch
             size={12}
@@ -97,13 +101,13 @@ function ViewerTopbar({
           <input
             type="text"
             placeholder="search..."
-            className="font-mono text-[11px] text-(--text-primary) bg-transparent placeholder:text-(--text-dim) [border:var(--border-subtle)] hover:[border:var(--border-default)] focus:[border:var(--border-default)] rounded-[4px] pl-7 pr-3 py-[3px] outline-none w-28 transition-all duration-150"
+            className="font-mono text-[11px] text-(--text-primary) bg-transparent placeholder:text-(--text-dim) [border:var(--border-subtle)] hover:[border:var(--border-default)] focus:[border:var(--border-default)] rounded-md pl-7 pr-3 py-0.75 outline-none w-28 transition-all duration-150"
           />
         </div>
       </div>
 
       {/* Bottom edge: 2px scroll progress track */}
-      <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[rgba(127,119,221,0.08)]">
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[rgba(127,119,221,0.08)]">
         <div
           className="h-full bg-(--accent-mid) transition-[width] duration-100 ease-out"
           style={{ width: `${progress ?? 0}%` }}
@@ -127,7 +131,7 @@ function ViewerSidebar({
   return (
     <aside
       className={`shrink-0 flex flex-col h-full [border-right:var(--border-subtle)] transition-[width] duration-200 ease-in-out overflow-hidden ${
-        open ? "w-[var(--notes-sidebar-w)]" : "w-0"
+        open ? "w-(--notes-sidebar-w)" : "w-0"
       }`}
     >
       {/* Lecture list */}
