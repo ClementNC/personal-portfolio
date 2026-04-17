@@ -4,52 +4,59 @@
 /* ─── Design System — CSS Variables ─────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --bg:       #0a0914;
-  --bg-card:  #120f24;
-  --bg-deep:  #0d0c1a;
-  --bg-term:  #080713;
+  --bg: #0a0914;
+  --bg-card: #120f24;
+  --bg-deep: #0d0c1a;
+  --bg-term: #080713;
 
   /* Accent — Indigo Night */
-  --accent:       #AFA9EC;
-  --accent-mid:   #7F77DD;
-  --accent-dark:  #534AB7;
+  --accent: #afa9ec;
+  --accent-mid: #7f77dd;
+  --accent-dark: #534ab7;
 
   /* Text */
   --text-primary: #dddaf5;
-  --text-body:    #9993c4;
-  --text-muted:   #7a76a0;
-  --text-dim:     #4e4a6e;
+  --text-body: #9993c4;
+  --text-muted: #7a76a0;
+  --text-dim: #4e4a6e;
 
   /* Layout */
   --nav-height: 56px;
   --notes-sidebar-w: clamp(220px, 25vw, 320px);
 
   /* Borders — 0.5px accent lines at graded opacities */
-  --border-subtle:  0.5px solid rgba(175, 169, 236, 0.08);
-  --border-default: 0.5px solid rgba(175, 169, 236, 0.10);
-  --border-strong:  0.5px solid rgba(175, 169, 236, 0.15);
-  --border-hover:   0.5px solid rgba(175, 169, 236, 0.28);
+  --border-subtle: 0.5px solid rgba(175, 169, 236, 0.08);
+  --border-default: 0.5px solid rgba(175, 169, 236, 0.1);
+  --border-strong: 0.5px solid rgba(175, 169, 236, 0.15);
+  --border-hover: 0.5px solid rgba(175, 169, 236, 0.28);
 
   /* Border colour-only — for hover transitions on existing borders */
   --border-color-strong: rgba(175, 169, 236, 0.15);
-  --border-color-hover:  rgba(175, 169, 236, 0.28);
+  --border-color-hover: rgba(175, 169, 236, 0.28);
 
   /* Semantic */
-  --success: #3B6D11;
-  --amber:   #BA7517;
-  --error:   #A32D2D;
+  --success: #3b6d11;
+  --amber: #ba7517;
+  --error: #a32d2d;
 
   /* Terminal syntax colours — emulate git bash / Linux terminal palette */
-  --term-prompt: #7eca9c;  /* user@host (green)       */
-  --term-path:   #569cd6;  /* ~/path, directories      */
-  --term-cmd:    #dcdcaa;  /* command names in help    */
-  --term-white:  #d4d4d4;  /* default output text      */
-  --term-error:  #f44747;  /* bash errors              */
+  --term-prompt: #7eca9c; /* user@host (green)       */
+  --term-path: #569cd6; /* ~/path, directories      */
+  --term-cmd: #dcdcaa; /* command names in help    */
+  --term-white: #d4d4d4; /* default output text      */
+  --term-error: #f44747; /* bash errors              */
 
   /* Book spine colour families */
-  --teal-1: #0A3830;  --teal-2: #0F6E56;  --teal-3: #1D9E75;
-  --slate-1: #042C53; --slate-2: #0C447C; --slate-3: #185FA5;
-  --amber-1: #412402; --amber-2: #633806; --amber-3: #854F0B; --amber-4: #BA7517;
+  --teal-1: #0a3830;
+  --teal-2: #0f6e56;
+  --teal-3: #1d9e75;
+  --slate-1: #042c53;
+  --slate-2: #0c447c;
+  --slate-3: #185fa5;
+  --amber-1: #412402;
+  --amber-2: #633806;
+  --amber-3: #854f0b;
+  --amber-4: #ba7517;
 }
 
 /* ─── Tailwind Theme — map CSS vars to utilities ────────────────────────── */
@@ -93,8 +100,13 @@ body {
 
 /* Typewriter block cursor */
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 .tw-cursor {
   display: inline-block;
@@ -119,8 +131,13 @@ body {
 
 /* "open to work" live dot */
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 .live-dot {
   width: 5px;
@@ -130,11 +147,109 @@ body {
   animation: pulse 2s ease-in-out infinite;
 }
 
+/* 404 glitch effect */
+@keyframes glitch-main {
+  0%,
+  90%,
+  100% {
+    clip-path: none;
+    transform: translate(0, 0);
+  }
+  91% {
+    clip-path: polygon(0 15%, 100% 15%, 100% 35%, 0 35%);
+    transform: translate(-3px, 0);
+  }
+  93% {
+    clip-path: polygon(0 55%, 100% 55%, 100% 70%, 0 70%);
+    transform: translate(3px, 0);
+  }
+  95% {
+    clip-path: polygon(0 30%, 100% 30%, 100% 45%, 0 45%);
+    transform: translate(-2px, 0);
+  }
+  97% {
+    clip-path: none;
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes glitch-layer-1 {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+  }
+  91%,
+  97% {
+    opacity: 1;
+    clip-path: polygon(0 10%, 100% 10%, 100% 28%, 0 28%);
+    transform: translate(-4px, 0);
+  }
+  93%,
+  95% {
+    opacity: 1;
+    clip-path: polygon(0 50%, 100% 50%, 100% 65%, 0 65%);
+    transform: translate(4px, 0);
+  }
+}
+
+@keyframes glitch-layer-2 {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+  }
+  92%,
+  96% {
+    opacity: 1;
+    clip-path: polygon(0 40%, 100% 40%, 100% 58%, 0 58%);
+    transform: translate(3px, 0);
+  }
+  94% {
+    opacity: 1;
+    clip-path: polygon(0 20%, 100% 20%, 100% 38%, 0 38%);
+    transform: translate(-3px, 0);
+  }
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+  animation: glitch-main 5s infinite;
+}
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+.glitch-text::before {
+  color: var(--accent-mid);
+  animation: glitch-layer-1 5s infinite;
+}
+.glitch-text::after {
+  color: var(--accent-dark);
+  animation: glitch-layer-2 5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text,
+  .glitch-text::before,
+  .glitch-text::after {
+    animation: none;
+  }
+}
+
 /* Scroll fade-in — applied via useIntersection */
 .fade-in {
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.45s ease, transform 0.45s ease;
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease;
 }
 .fade-in.visible {
   opacity: 1;
@@ -183,46 +298,132 @@ body {
 
 /* InProgress illustration — pencil sweep + line reveal */
 @keyframes pencil-move {
-  0%   { transform: translate(20px, 32px); }
-  28%  { transform: translate(62px, 32px); }
-  29%  { transform: translate(20px, 45px); }
-  55%  { transform: translate(62px, 45px); }
-  56%  { transform: translate(18px, 58px); }
-  77%  { transform: translate(48px, 58px); }
-  87%  { transform: translate(48px, 58px); }
-  99%  { transform: translate(18px, 32px); }
-  100% { transform: translate(20px, 32px); }
+  0% {
+    transform: translate(20px, 32px);
+  }
+  28% {
+    transform: translate(62px, 32px);
+  }
+  29% {
+    transform: translate(20px, 45px);
+  }
+  55% {
+    transform: translate(62px, 45px);
+  }
+  56% {
+    transform: translate(18px, 58px);
+  }
+  77% {
+    transform: translate(48px, 58px);
+  }
+  87% {
+    transform: translate(48px, 58px);
+  }
+  99% {
+    transform: translate(18px, 32px);
+  }
+  100% {
+    transform: translate(20px, 32px);
+  }
 }
 @keyframes note-draw-line-1 {
-  0%   { clip-path: inset(0 100% 0 0); opacity: 1; }
-  28%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  85%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  94%  { clip-path: inset(0 0% 0 0);   opacity: 0; }
-  99%  { clip-path: inset(0 100% 0 0); opacity: 0; }
-  100% { clip-path: inset(0 100% 0 0); opacity: 1; }
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 1;
+  }
+  28% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  85% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  94% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 0;
+  }
+  99% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 1;
+  }
 }
 @keyframes note-draw-line-2 {
-  0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
-  29%  { clip-path: inset(0 100% 0 0); opacity: 1; }
-  55%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  85%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  94%  { clip-path: inset(0 0% 0 0);   opacity: 0; }
-  99%  { clip-path: inset(0 100% 0 0); opacity: 0; }
-  100% { clip-path: inset(0 100% 0 0); opacity: 0; }
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  29% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 1;
+  }
+  55% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  85% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  94% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 0;
+  }
+  99% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
 }
 @keyframes note-draw-line-3 {
-  0%   { clip-path: inset(0 100% 0 0); opacity: 0; }
-  56%  { clip-path: inset(0 100% 0 0); opacity: 1; }
-  77%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  85%  { clip-path: inset(0 0% 0 0);   opacity: 1; }
-  94%  { clip-path: inset(0 0% 0 0);   opacity: 0; }
-  99%  { clip-path: inset(0 100% 0 0); opacity: 0; }
-  100% { clip-path: inset(0 100% 0 0); opacity: 0; }
+  0% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  56% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 1;
+  }
+  77% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  85% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 1;
+  }
+  94% {
+    clip-path: inset(0 0% 0 0);
+    opacity: 0;
+  }
+  99% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+  }
 }
-.pencil        { animation: pencil-move     3.8s linear infinite; }
-.note-line-1   { animation: note-draw-line-1 3.8s linear infinite; }
-.note-line-2   { animation: note-draw-line-2 3.8s linear infinite; }
-.note-line-3   { animation: note-draw-line-3 3.8s linear infinite; }
+.pencil {
+  animation: pencil-move 3.8s linear infinite;
+}
+.note-line-1 {
+  animation: note-draw-line-1 3.8s linear infinite;
+}
+.note-line-2 {
+  animation: note-draw-line-2 3.8s linear infinite;
+}
+.note-line-3 {
+  animation: note-draw-line-3 3.8s linear infinite;
+}
 
 /* ─── Notes prose — MDX content styling ─────────────────────────────────── */
 .markdown-notes h2 {
@@ -265,8 +466,12 @@ body {
   margin-bottom: 1rem;
   padding-left: 1.25rem;
 }
-.markdown-notes ul { list-style-type: disc; }
-.markdown-notes ol { list-style-type: decimal; }
+.markdown-notes ul {
+  list-style-type: disc;
+}
+.markdown-notes ol {
+  list-style-type: decimal;
+}
 
 /* ─── KaTeX overrides — match design palette ────────────────────────────── */
 .katex {

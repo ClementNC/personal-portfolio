@@ -6,12 +6,22 @@ import { Contact } from "@/components/home/Contact";
 
 export default function HomePage() {
   return (
-    <main className="flex-1 max-w-[900px] mx-auto w-full px-12">
-      <section id="hero"><Hero /></section>
-      <section id="skills"><Skills /></section>
-      <section id="experience"><ExperienceList /></section>
-      <section id="notes"><NotesPreview /></section>
-      <section id="contact"><Contact /></section>
+    <main className="flex-1 max-w-225 mx-auto w-full px-12">
+      <section id="hero">
+        <Hero />
+      </section>
+      <section id="skills">
+        <Skills />
+      </section>
+      <section id="experience">
+        <ExperienceList />
+      </section>
+      <section id="notes">
+        <NotesPreview />
+      </section>
+      <section id="contact">
+        <Contact />
+      </section>
     </main>
   );
 }
