@@ -473,6 +473,23 @@ body {
   list-style-type: decimal;
 }
 
+/* ─── Code block line numbers ───────────────────────────────────────────── */
+.markdown-notes pre code {
+  counter-reset: line-number;
+}
+.markdown-notes pre code .line {
+  counter-increment: line-number;
+}
+.markdown-notes pre code .line::before {
+  content: counter(line-number);
+  display: inline-block;
+  width: 2ch;
+  margin-right: 1.5rem;
+  text-align: right;
+  color: var(--text-dim);
+  user-select: none;
+}
+
 /* ─── KaTeX overrides — match design palette ────────────────────────────── */
 .katex {
   font-size: 1em;

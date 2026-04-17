@@ -7,6 +7,7 @@ import type { Pluggable } from "unified";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeShiki from "@shikijs/rehype";
+import type { ShikiTransformer } from "shiki";
 import { COURSES } from "@/constants/notes";
 import { getCourse } from "@/lib/notes";
 import { NotesViewer } from "@/components/notes/NotesViewer";
@@ -33,7 +34,6 @@ export async function generateMetadata({
 
   return { title: `${entry.title} | Clement Chow` };
 }
-
 
 export function getNoteContent(courseCode: string, id: string): string {
   const NOTES_DIR = path.join(process.cwd(), "content/notes");
@@ -62,7 +62,20 @@ export default async function LecturePage({
           remarkPlugins: [remarkMath],
           rehypePlugins: [
             rehypeKatex as Pluggable,
-            [rehypeShiki, { theme: "github-dark" }],
+            [
+              rehypeShiki,
+              {
+                theme: "dracula",
+                defaultLanguage: "text",
+                transformers: [
+                  {
+                    pre(node) {
+                      node.properties.dataLanguage = this.options.lang;
+                    },
+                  } satisfies ShikiTransformer,
+                ],
+              },
+            ],
           ],
         },
       },
