@@ -93,7 +93,9 @@ const PromptPrefix = (path: string) => (
   </>
 );
 const OutputText = (text: string) => {
-  const parts = text.split(/(https?:\/\/[^\s]+|mailto:[^\s]+|[\w.+-]+@[\w-]+\.[^\s]+)/);
+  const parts = text.split(
+    /(https?:\/\/[^\s]+|mailto:[^\s]+|[\w.+-]+@[\w-]+\.[^\s]+)/,
+  );
   if (parts.length === 1) {
     return <span className="text-(--term-white)">{text}</span>;
   }
@@ -147,8 +149,8 @@ function TerminalWindow({
   return (
     <>
       {/* macOS-style titlebar — dots left, path centred */}
-      <div className="flex items-center justify-between px-3 py-[9px] [border-bottom:var(--border-subtle)] shrink-0">
-        <div className="flex items-center gap-[6px]">
+      <div className="flex items-center justify-between px-3 py-2.25 [border-bottom:var(--border-subtle)] shrink-0">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={onClose}
             className="group relative w-3 h-3 rounded-full bg-[#ff5f57] hover:opacity-75 transition-opacity cursor-pointer flex items-center justify-center"
@@ -181,7 +183,7 @@ function TerminalWindow({
         </span>
 
         {/* Mirrors the dots cluster width so the path appears visually centred */}
-        <div className="w-[54px]" />
+        <div className="w-13.5" />
       </div>
 
       {/* Scrollable output — clicking anywhere in the output area focuses the input,
@@ -640,7 +642,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
       {state === "panel" && (
         <div
           className={cn(
-            "fixed bottom-6 right-6 z-50 w-[300px] h-[380px] bg-(--bg-term) [border:var(--border-strong)] rounded-[8px] flex flex-col overflow-hidden shadow-2xl",
+            "fixed bottom-6 right-6 z-50 w-75 h-95 bg-(--bg-term) [border:var(--border-strong)] rounded-lg flex flex-col overflow-hidden shadow-2xl",
             animationClass,
           )}
           onAnimationEnd={isMinimising ? handleMinimiseEnd : undefined}
@@ -658,7 +660,7 @@ export function Terminal({ isDesktop, openTrigger, openMode }: TerminalProps) {
           )}
           onAnimationEnd={isMinimising ? handleMinimiseEnd : undefined}
         >
-          <div className="max-w-[900px] w-full mx-auto flex flex-col h-full py-4 px-6">
+          <div className="max-w-225 w-full mx-auto flex flex-col h-full py-4 px-6">
             <TerminalWindow {...windowProps} />
           </div>
         </div>

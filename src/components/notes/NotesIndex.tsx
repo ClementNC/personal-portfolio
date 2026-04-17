@@ -100,7 +100,7 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
   >({});
   const [searchTerm, setSearchTerm] = useState("");
 
-  const query = searchTerm.trim().toLowerCase();
+  const query = searchTerm.trim().toLowerCase().replace(/\s+/g, " ");
   const isSearching = query.length > 0;
 
   const toggleTerm = (term: string) => {
@@ -126,7 +126,7 @@ export function NotesIndex({ termGroups }: NotesIndexProps) {
         ...group,
         courses: group.courses.filter(
           (c) =>
-            c.code.toLowerCase().includes(query) ||
+            c.code.toLowerCase().includes(query.replace(/\s+/g, "")) ||
             c.title.toLowerCase().includes(query),
         ),
       }))

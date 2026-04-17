@@ -9,16 +9,15 @@ export function Skills() {
   const ref = useIntersection<HTMLElement>();
 
   return (
-    <section
-      ref={ref}
-      className="fade-in py-8"
-    >
+    <section ref={ref} className="fade-in py-8">
       <SectionHeader title="technical skills" />
       <div className="flex flex-col gap-4">
         {Object.entries(SKILLS).map(([category, skills]) => (
           <div key={category}>
-            <p className="font-mono text-[11px] text-(--text-dim) mb-2">{category}</p>
-            <div className="flex flex-wrap gap-[7px]">
+            <p className="font-mono text-[11px] text-(--text-dim) mb-2">
+              {category}
+            </p>
+            <div className="flex flex-wrap gap-1.75">
               {skills.map((skill) => (
                 <Tag key={skill} label={skill} />
               ))}
