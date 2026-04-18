@@ -490,6 +490,18 @@ body {
   user-select: none;
 }
 
+/* ─── Within-note search highlights ─────────────────────────────────────── */
+mark[data-find] {
+  background: rgba(127, 119, 221, 0.2);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+mark[data-find][data-find-active] {
+  background: rgba(127, 119, 221, 0.55);
+}
+
 /* ─── KaTeX overrides — match design palette ────────────────────────────── */
 .katex {
   font-size: 1em;

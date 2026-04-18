@@ -1,16 +1,24 @@
 "use client";
 
-import type { ReactElement } from "react";
+import type { ReactElement, RefObject } from "react";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { LuPanelLeftClose, LuPanelLeftOpen } from "react-icons/lu";
-import { HiSearch } from "react-icons/hi";
 import { HiArrowLongLeft, HiArrowLongRight } from "react-icons/hi2";
 import type { LectureEntry } from "@/types/notes";
-import { formatCourseCode } from "@/lib/notes";
-import { getCourse } from "@/lib/notes";
+import type { SearchEntry } from "@/lib/search-index";
+import { formatCourseCode, getCourse } from "@/lib/notes";
+import { SearchBar } from "@/components/notes/SearchBar";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
+
+interface SearchSlotProps {
+  isOpen: boolean;
+  entries: SearchEntry[];
+  isPdf: boolean;
+  contentRef: RefObject<HTMLDivElement | null>;
+  onOpenChange: (open: boolean) => void;
+}
 
 interface NotesViewerProps {
   courseCode: string;
@@ -18,6 +26,7 @@ interface NotesViewerProps {
   activeLecture: string;
   content: ReactElement | null;
   pdfUrl?: string;
+  searchEntries: SearchEntry[];
 }
 
 // ── Sub-components ────────────────────────────────────────────────────────────
@@ -30,6 +39,7 @@ function ViewerTopbar({
   prevLecture,
   nextLecture,
   progress,
+  search,
 }: {
   open: boolean;
   onToggle: () => void;
@@ -38,6 +48,7 @@ function ViewerTopbar({
   prevLecture: LectureEntry | null;
   nextLecture: LectureEntry | null;
   progress: number | null;
+  search: SearchSlotProps;
 }) {
   const lectureHref = (id: string) =>
     `/notes/${courseCode.toLowerCase()}/${id}`;
@@ -60,7 +71,11 @@ function ViewerTopbar({
             <LuPanelLeftOpen size={16} />
           )}
         </button>
-        <span className="font-mono text-[12px] text-(--text-muted) truncate">
+        <span
+          className={`font-mono text-[12px] text-(--text-muted) truncate transition-opacity duration-150 ${
+            search.isOpen ? "opacity-40" : "opacity-100"
+          }`}
+        >
           {formatCourseCode(courseCode)}
           {courseTitle && (
             <span className="text-(--text-dim)"> · {courseTitle}</span>
@@ -69,7 +84,11 @@ function ViewerTopbar({
       </div>
 
       {/* Center: prev + title + next */}
-      <div className="flex items-center gap-2">
+      <div
+        className={`flex items-center gap-2 transition-opacity duration-150 ${
+          search.isOpen ? "opacity-40" : "opacity-100"
+        }`}
+      >
         <Link
           href={prevLecture ? lectureHref(prevLecture.id) : notesIndexHref}
           className="text-(--text-dim) hover:text-(--accent) transition-colors duration-150 shrink-0"
@@ -93,20 +112,16 @@ function ViewerTopbar({
 
       {/* Right: search */}
       <div className="flex items-center justify-end pr-6">
-        <div className="relative">
-          <HiSearch
-            size={12}
-            className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--text-dim) pointer-events-none"
-          />
-          <input
-            type="text"
-            placeholder="search..."
-            className="font-mono text-[11px] text-(--text-primary) bg-transparent placeholder:text-(--text-dim) [border:var(--border-subtle)] hover:[border:var(--border-default)] focus:[border:var(--border-default)] rounded-md pl-7 pr-3 py-0.75 outline-none w-28 transition-all duration-150"
-          />
-        </div>
+        <SearchBar
+          courseCode={courseCode}
+          isPdf={search.isPdf}
+          searchEntries={search.entries}
+          contentRef={search.contentRef}
+          onOpenChange={search.onOpenChange}
+        />
       </div>
 
-      {/* Bottom edge: 2px scroll progress track */}
+      {/* Bottom edge: scroll progress track */}
       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[rgba(127,119,221,0.08)]">
         <div
           className="h-full bg-(--accent-mid) transition-[width] duration-100 ease-out"
@@ -123,7 +138,7 @@ function ViewerSidebar({
   activeLecture,
   open,
 }: {
-  courseCode: string; // used to build lecture hrefs
+  courseCode: string;
   lectures: LectureEntry[];
   activeLecture: string;
   open: boolean;
@@ -134,7 +149,6 @@ function ViewerSidebar({
         open ? "w-(--notes-sidebar-w)" : "w-0"
       }`}
     >
-      {/* Lecture list */}
       <nav className="flex-1 overflow-y-auto py-2">
         {lectures.map((lecture, i) => {
           const isActive = lecture.id === activeLecture;
@@ -152,6 +166,11 @@ function ViewerSidebar({
                 L{i + 1}
               </span>
               <span className="truncate">{lecture.title}</span>
+              {lecture.type === "pdf" && (
+                <span className="font-mono text-[10px] text-(--amber) [border:0.5px_solid_rgba(186,117,23,0.3)] px-1 rounded ml-auto shrink-0">
+                  pdf
+                </span>
+              )}
             </Link>
           );
         })}
@@ -163,10 +182,12 @@ function ViewerSidebar({
 function ViewerContent({
   content,
   pdfUrl,
+  markdownRef,
   onProgressChange,
 }: {
   content: ReactElement | null;
   pdfUrl?: string;
+  markdownRef: RefObject<HTMLDivElement | null>;
   onProgressChange?: (pct: number | null) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -213,7 +234,10 @@ function ViewerContent({
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto">
-      <div className="max-w-3xl mx-auto px-8 py-10 markdown-notes">
+      <div
+        ref={markdownRef}
+        className="max-w-3xl mx-auto px-8 py-10 markdown-notes"
+      >
         {content}
       </div>
     </div>
@@ -228,6 +252,7 @@ export function NotesViewer({
   activeLecture,
   content,
   pdfUrl,
+  searchEntries,
 }: NotesViewerProps) {
   const [sidebarOpen, setSidebarOpen] = useState(() => {
     if (typeof window === "undefined") return true;
@@ -242,7 +267,11 @@ export function NotesViewer({
       return next;
     });
   }
+
   const [progress, setProgress] = useState<number | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const markdownRef = useRef<HTMLDivElement>(null);
+
   const currentIndex = lectures.findIndex((l) => l.id === activeLecture);
   const lectureTitle = lectures[currentIndex]?.title;
   const prevLecture = currentIndex > 0 ? lectures[currentIndex - 1] : null;
@@ -262,6 +291,13 @@ export function NotesViewer({
         prevLecture={prevLecture}
         nextLecture={nextLecture}
         progress={progress}
+        search={{
+          isOpen: searchOpen,
+          entries: searchEntries,
+          isPdf: !!pdfUrl,
+          contentRef: markdownRef,
+          onOpenChange: setSearchOpen,
+        }}
       />
       <div className="flex flex-1 overflow-hidden">
         <ViewerSidebar
@@ -273,6 +309,7 @@ export function NotesViewer({
         <ViewerContent
           content={content}
           pdfUrl={pdfUrl}
+          markdownRef={markdownRef}
           onProgressChange={setProgress}
         />
       </div>

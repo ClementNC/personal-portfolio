@@ -10,8 +10,32 @@ import rehypeShiki from "@shikijs/rehype";
 import type { ShikiTransformer } from "shiki";
 import { COURSES } from "@/constants/notes";
 import { getCourse } from "@/lib/notes";
+import { buildSearchEntries } from "@/lib/search-index";
+import type { LectureEntry } from "@/types/notes";
 import { NotesViewer } from "@/components/notes/NotesViewer";
 import { CodeBlock } from "@/components/notes/CodeBlock";
+
+function readCourseContent(
+  courseCode: string,
+  lectures: LectureEntry[],
+): Map<string, string> {
+  const NOTES_DIR = path.join(process.cwd(), "content/notes");
+  const map = new Map<string, string>();
+  for (const lecture of lectures) {
+    if (lecture.type === "pdf") continue;
+    const filePath = path.join(
+      NOTES_DIR,
+      courseCode.toLowerCase(),
+      `${lecture.id}.mdx`,
+    );
+    try {
+      map.set(lecture.id, fs.readFileSync(filePath, "utf-8"));
+    } catch {
+      map.set(lecture.id, "");
+    }
+  }
+  return map;
+}
 
 export async function generateStaticParams() {
   return COURSES.flatMap((course) =>
@@ -35,12 +59,6 @@ export async function generateMetadata({
   return { title: `${entry.title} | Clement Chow` };
 }
 
-export function getNoteContent(courseCode: string, id: string): string {
-  const NOTES_DIR = path.join(process.cwd(), "content/notes");
-  const filePath = path.join(NOTES_DIR, courseCode.toLowerCase(), `${id}.mdx`);
-  return fs.readFileSync(filePath, "utf-8");
-}
-
 export default async function LecturePage({
   params,
 }: {
@@ -51,40 +69,46 @@ export default async function LecturePage({
   const currentLecture = courseInfo?.lectures.find((l) => l.id === lecture);
   if (!courseInfo || !currentLecture) notFound();
 
-  let content: ReactElement | null = null;
+  const rawContent = readCourseContent(course, courseInfo.lectures);
 
-  if (currentLecture.type === "notes") {
-    const raw = getNoteContent(course, lecture);
-    const compiled = await compileMDX({
-      source: raw,
-      options: {
-        mdxOptions: {
-          remarkPlugins: [remarkMath],
-          rehypePlugins: [
-            rehypeKatex as Pluggable,
-            [
-              rehypeShiki,
-              {
-                theme: "dracula",
-                defaultLanguage: "text",
-                transformers: [
+  const compileMdx =
+    currentLecture.type === "notes"
+      ? compileMDX({
+          source: rawContent.get(lecture) ?? "",
+          options: {
+            mdxOptions: {
+              remarkPlugins: [remarkMath],
+              rehypePlugins: [
+                rehypeKatex as Pluggable,
+                [
+                  rehypeShiki,
                   {
-                    pre(node) {
-                      node.properties.dataLanguage = this.options.lang;
-                    },
-                  } satisfies ShikiTransformer,
+                    theme: "dracula",
+                    defaultLanguage: "text",
+                    transformers: [
+                      {
+                        pre(node) {
+                          node.properties.dataLanguage = this.options.lang;
+                        },
+                      } satisfies ShikiTransformer,
+                    ],
+                  },
                 ],
-              },
-            ],
-          ],
-        },
-      },
-      components: {
-        pre: CodeBlock,
-      },
-    });
-    content = compiled.content;
-  }
+              ],
+            },
+          },
+          components: {
+            pre: CodeBlock,
+          },
+        })
+      : Promise.resolve(null);
+
+  const [compiled, searchEntries] = await Promise.all([
+    compileMdx,
+    buildSearchEntries(courseInfo.lectures, rawContent),
+  ]);
+
+  const content: ReactElement | null = compiled?.content ?? null;
 
   return (
     <NotesViewer
@@ -93,6 +117,7 @@ export default async function LecturePage({
       activeLecture={lecture}
       content={content}
       pdfUrl={currentLecture.pdfUrl}
+      searchEntries={searchEntries}
     />
   );
 }
